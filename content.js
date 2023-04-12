@@ -18,22 +18,26 @@ document.addEventListener("mouseup", (event) => {
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
   if (!selectedText) return;
+
+  const textRange = selection.getRangeAt(0);
+  const textRect = textRange.getBoundingClientRect();
+
   const mouseX = event.clientX;
   const mouseY = event.clientY;
 
   button = document.createElement("button");
   button.innerText = "Write it better";
+  button.className = "writeItBetterButton";
   button.style.position = "absolute";
-  button.style.left = `${mouseX}px`;
+  button.style.left = `${mouseX + 10}px`;
   button.style.top = `${mouseY + 10}px`;
+  button.style.zIndex = 1;
   document.body.appendChild(button);
 
   button.addEventListener("mouseup", (event) => {
     event.stopPropagation();
     document.body.removeChild(button);
     button = null;
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
 
     chrome.storage.sync.get("openaiSecretKey", function (data) {
       let openaiSecretKey = data.openaiSecretKey;
@@ -44,15 +48,17 @@ document.addEventListener("mouseup", (event) => {
         chrome.storage.sync.set({ openaiSecretKey: openaiSecretKey }); // we need to store it only if success
       }
 
-      fetch("https://api.openai.com/v1/completions", {
+      fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + openaiSecretKey,
         },
         body: JSON.stringify({
-          model: "text-davinci-003",
-          prompt: "Improve this text: " + selectedText,
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "user", content: "Improve this text: " + selectedText },
+          ],
           max_tokens: 1000,
           temperature: 0,
           n: 1,
@@ -63,21 +69,22 @@ document.addEventListener("mouseup", (event) => {
           return response.json();
         })
         .then(function (data) {
-          const text = data.choices[0].text;
+          const text = data.choices[0].message.content;
+
+          const x = textRect.left;
+          const y = textRect.bottom;
 
           textarea = document.createElement("textarea");
           document.body.appendChild(textarea);
-          textarea.style.position = "absolute";
           textarea.value = text;
-          textarea.style.left = `${mouseX}px`;
-          textarea.style.top = `${mouseY + 10}px`;
-          textarea.style.width = "400px";
+          textarea.className = "writeItBetterBox";
+          textarea.style.position = "absolute";
+          textarea.style.left = `${x}px`;
+          textarea.style.top = `${y + 10}px`;
+          textarea.style.width = `${textRect.width}px`;
           textarea.style.height = `${textarea.scrollHeight}px`;
           textarea.style.overflowY = "hidden";
           textarea.style.zIndex = 1;
-
-          textarea.select();
-          document.execCommand("copy");
         });
     });
   });
