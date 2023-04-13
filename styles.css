@@ -1,8 +1,7 @@
 .writeItBetterButton {
-  
+  cursor: pointer;
   border: 0;
   outline: 0;
-  cursor: pointer;
   color: white;
   background-color: rgb(84, 105, 212);
   box-shadow: rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 12%) 0px 1px 1px 0px, rgb(84 105 212) 0px 0px 0px 1px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(0 0 0 / 0%) 0px 0px 0px 0px, rgb(60 66 87 / 8%) 0px 2px 5px 0px;
@@ -20,13 +19,13 @@
 }
 
 .writeItBetterBox {
+  cursor: pointer;
   padding: 7px;
-  border-radius: 6px;
-  font-size: 16px;
+  border-radius: 10px;
   background: #fbfbfb;
   border: 2px solid transparent;
   height: 36px;
-  box-shadow: 0 0 0 1px #dddddd, 0 2px 4px 0 rgb(0 0 0 / 7%), 0 1px 1.5px 0 rgb(0 0 0 / 5%);
+  background-color: khaki;
   :focus{
       border: 2px solid #000;
       border-radius: 4px;
