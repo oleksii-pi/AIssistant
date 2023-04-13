@@ -29,6 +29,7 @@ async function getOpenAiSectretKey() {
 }
 
 async function getBetterText(openaiSecretKey, text) {
+  document.body.style.cursor = "wait";
   return fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -48,7 +49,11 @@ async function getBetterText(openaiSecretKey, text) {
       return response.json();
     })
     .then(function (data) {
+      document.body.style.cursor = "default";
       return data.choices[0].message.content;
+    })
+    .catch(() => {
+      document.body.style.cursor = "default";
     });
 }
 
@@ -88,8 +93,8 @@ document.addEventListener("mouseup", (event) => {
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
 
-  const mouseX = event.clientX;
-  const mouseY = event.clientY;
+  const mouseX = event.clientX + window.pageXOffset;
+  const mouseY = event.clientY + window.pageYOffset;
   button = createButton(mouseX + 10, mouseY + 10);
 
   button.addEventListener("mouseup", async (event) => {
@@ -100,8 +105,8 @@ document.addEventListener("mouseup", (event) => {
     const openaiSecretKey = await getOpenAiSectretKey();
     const betterText = await getBetterText(openaiSecretKey, selectedText);
 
-    const x = selectionRect.left;
-    const y = selectionRect.bottom;
+    const x = selectionRect.left + window.pageXOffset;
+    const y = selectionRect.bottom + window.pageYOffset;
 
     textarea = createTextArea(x, y + 10, selectionRect.width, betterText);
 
