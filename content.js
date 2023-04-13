@@ -52,6 +52,33 @@ async function getBetterText(openaiSecretKey, text) {
     });
 }
 
+function createButton(left, top) {
+  const b = document.createElement("button");
+  b.innerText = "Write it better";
+  b.className = "writeItBetterButton";
+  b.style.position = "absolute";
+  b.style.left = `${left}px`;
+  b.style.top = `${top}px`;
+  b.style.zIndex = 1;
+  document.body.appendChild(b);
+  return b;
+}
+
+function createTextArea(left, top, width, text) {
+  const ta = document.createElement("textarea");
+  document.body.appendChild(ta);
+  ta.value = text;
+  ta.className = "writeItBetterBox";
+  ta.style.position = "absolute";
+  ta.style.left = `${left}px`;
+  ta.style.top = `${top}px`;
+  ta.style.width = `${width}px`;
+  ta.style.height = `${ta.scrollHeight}px`;
+  ta.style.overflowY = "hidden";
+  ta.style.zIndex = 1;
+  return ta;
+}
+
 document.addEventListener("mouseup", (event) => {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
@@ -63,15 +90,7 @@ document.addEventListener("mouseup", (event) => {
 
   const mouseX = event.clientX;
   const mouseY = event.clientY;
-
-  button = document.createElement("button");
-  button.innerText = "Write it better";
-  button.className = "writeItBetterButton";
-  button.style.position = "absolute";
-  button.style.left = `${mouseX + 10}px`;
-  button.style.top = `${mouseY + 10}px`;
-  button.style.zIndex = 1;
-  document.body.appendChild(button);
+  button = createButton(mouseX + 10, mouseY + 10);
 
   button.addEventListener("mouseup", async (event) => {
     event.stopPropagation();
@@ -84,19 +103,9 @@ document.addEventListener("mouseup", (event) => {
     const x = selectionRect.left;
     const y = selectionRect.bottom;
 
-    textarea = document.createElement("textarea");
-    document.body.appendChild(textarea);
-    textarea.value = betterText;
-    textarea.className = "writeItBetterBox";
-    textarea.style.position = "absolute";
-    textarea.style.left = `${x}px`;
-    textarea.style.top = `${y + 10}px`;
-    textarea.style.width = `${selectionRect.width}px`;
-    textarea.style.height = `${textarea.scrollHeight}px`;
-    textarea.style.overflowY = "hidden";
-    textarea.style.zIndex = 1;
+    textarea = createTextArea(x, y + 10, selectionRect.width, betterText);
 
-    textarea.addEventListener("mousedown", (event) => {
+    textarea.addEventListener("mousedown", () => {
       selectionRange.deleteContents();
       selectionRange.insertNode(document.createTextNode(textarea.value));
       document.body.removeChild(textarea);
