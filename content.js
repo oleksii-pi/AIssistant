@@ -61,10 +61,8 @@ function createButton(left, top) {
   const b = document.createElement("button");
   b.innerText = "Write it better";
   b.className = "writeItBetterButton";
-  b.style.position = "absolute";
   b.style.left = `${left}px`;
   b.style.top = `${top}px`;
-  b.style.zIndex = 1;
   document.body.appendChild(b);
   return b;
 }
@@ -74,13 +72,10 @@ function createTextArea(left, top, width, text) {
   document.body.appendChild(ta);
   ta.value = text;
   ta.className = "writeItBetterBox";
-  ta.style.position = "absolute";
   ta.style.left = `${left}px`;
   ta.style.top = `${top}px`;
   ta.style.width = `${width}px`;
   ta.style.height = `${ta.scrollHeight}px`;
-  ta.style.overflowY = "hidden";
-  ta.style.zIndex = 1;
   return ta;
 }
 
@@ -110,11 +105,11 @@ document.addEventListener("mouseup", (event) => {
 
     textarea = createTextArea(x, y + 10, selectionRect.width, betterText);
 
-    textarea.addEventListener("mousedown", () => {
-      selectionRange.deleteContents();
-      selectionRange.insertNode(document.createTextNode(textarea.value));
-      document.body.removeChild(textarea);
-      textarea = null;
-    });
+    // textarea.addEventListener("mousedown", () => {
+    //   selectionRange.deleteContents();
+    //   selectionRange.insertNode(document.createTextNode(textarea.value));
+    //   document.body.removeChild(textarea);
+    //   textarea = null;
+    // });
   });
 });
