@@ -1,23 +1,26 @@
-let button = document.createElement("button");
-button.style.display = "none";
-button.innerText = "W";
-button.className = "writeItBetterButton";
-document.body.appendChild(button);
+const userConfigs = [
+  {
+    buttonText: "T",
+    buttonHint: "Translate",
+    buttonBackground: "#5469d4",
+    requestTemplate: "Translate to russian: ",
+  },
+  {
+    buttonText: "W",
+    buttonHint: "Write it better",
+    buttonBackground: "#37447e",
+    requestTemplate: "Improve this text: ",
+  },
+];
 
-let textarea = document.createElement("textarea");
-textarea.style.display = "none";
-textarea.className = "writeItBetterBox";
-document.body.appendChild(textarea);
-
-let abortController;
-
-button.addEventListener("mouseup", async (event) => {
+const buttonMouseUpHandler = async (event) => {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
   if (!selectedText) return;
-  button.style.display = "none";
+  buttons.forEach((b) => (b.style.display = "none"));
   event.stopPropagation();
+  const button = event.target;
 
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
@@ -34,20 +37,40 @@ button.addEventListener("mouseup", async (event) => {
   const openaiSecretKey = await getOpenAiSectretKey();
   await streamAnswer(
     openaiSecretKey,
-    `Improve this text: "${selectedText.replace(`"`, `""`)}"`,
+    `${button.requestTemplate}"${selectedText.replace(`"`, `""`)}"`,
     (partialResponse) => {
       textarea.value += partialResponse;
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   );
+};
+
+const buttons = userConfigs.map((config) => {
+  const b = document.createElement("button");
+  b.style.display = "none";
+  b.style.backgroundColor = config.buttonBackground;
+  b.innerText = config.buttonText;
+  b.title = config.buttonHint;
+  b.className = "writeItBetterButton";
+  b.requestTemplate = config.requestTemplate;
+  document.body.appendChild(b);
+  b.addEventListener("mouseup", buttonMouseUpHandler);
+  return b;
 });
 
+let textarea = document.createElement("textarea");
+textarea.style.display = "none";
+textarea.className = "writeItBetterBox";
+document.body.appendChild(textarea);
+
+let abortController;
+
 document.addEventListener("mousedown", (event) => {
-  if (button && !button.contains(event.target)) {
-    button.style.display = "none";
+  if (buttons.filter((b) => b.contains(event.target)) == 0) {
+    buttons.forEach((b) => (b.style.display = "none"));
   }
 
-  if (textarea && !textarea.contains(event.target)) {
+  if (!textarea.contains(event.target)) {
     textarea.style.display = "none";
     if (abortController) {
       abortController.abort();
@@ -64,9 +87,11 @@ document.addEventListener("mouseup", (event) => {
 
   const mouseX = event.clientX + window.pageXOffset;
   const mouseY = event.clientY + window.pageYOffset;
-  button.style.left = `${mouseX + 10}px`;
-  button.style.top = `${mouseY + 10}px`;
-  button.style.display = "block";
+  buttons.forEach((button, i) => {
+    button.style.left = `${mouseX + 10}px`;
+    button.style.top = `${mouseY + 10 + 32 * i}px`;
+    button.style.display = "block";
+  });
 });
 
 async function getOpenAiSectretKey() {
