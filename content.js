@@ -9,6 +9,8 @@ textarea.style.display = "none";
 textarea.className = "writeItBetterBox";
 document.body.appendChild(textarea);
 
+let abortController;
+
 button.addEventListener("mouseup", async (event) => {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
@@ -32,7 +34,7 @@ button.addEventListener("mouseup", async (event) => {
   const openaiSecretKey = await getOpenAiSectretKey();
   await streamAnswer(
     openaiSecretKey,
-    `Improve this text: "${selectedText}"`,
+    `Improve this text: "${selectedText.replace(`"`, `""`)}"`,
     (partialResponse) => {
       textarea.value += partialResponse;
       textarea.style.height = `${textarea.scrollHeight}px`;
@@ -47,6 +49,10 @@ document.addEventListener("mousedown", (event) => {
 
   if (textarea && !textarea.contains(event.target)) {
     textarea.style.display = "none";
+    if (abortController) {
+      abortController.abort();
+      abortController = null;
+    }
   }
 });
 
@@ -80,6 +86,7 @@ async function getOpenAiSectretKey() {
 
 async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
   document.body.style.cursor = "wait";
+  abortController = new AbortController();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -94,24 +101,33 @@ async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
       n: 1,
       stream: true,
     }),
+    signal: abortController.signal,
   });
+  abortController.signal.addEventListener("abort", () => {
+    document.body.style.cursor = "default";
+  });
+
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
-  while (true) {
-    const { value } = await reader.read();
-    const sseString = decoder.decode(value);
-    if (sseString.includes("data: [DONE]")) break;
-    const sseArray = sseString
-      .split("\n")
-      .filter((line) => line.startsWith("data:"))
-      .map((line) => JSON.parse(line.substring(6).trim()));
+  try {
+    while (true) {
+      const { value } = await reader.read();
+      const sseString = decoder.decode(value);
+      if (sseString.includes("data: [DONE]")) break;
+      const sseArray = sseString
+        .split("\n")
+        .filter((line) => line.startsWith("data:"))
+        .map((line) => JSON.parse(line.substring(6).trim()));
 
-    const partialTex = sseArray
-      .map((x) => x.choices[0].delta.content)
-      .filter((x) => x)
-      .join();
+      const partialTex = sseArray
+        .map((x) => x.choices[0].delta.content)
+        .filter((x) => x)
+        .join();
 
-    onPartialResponse(partialTex);
+      onPartialResponse(partialTex);
+    }
+  } catch (error) {
+    controller = null;
   }
   document.body.style.cursor = "default";
 }
