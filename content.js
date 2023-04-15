@@ -122,8 +122,7 @@ async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
       const partialTex = sseArray
         .map((x) => x.choices[0].delta.content)
         .filter((x) => x)
-        .join();
-
+        .join("");
       onPartialResponse(partialTex);
     }
   } catch (error) {
