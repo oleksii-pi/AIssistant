@@ -17,23 +17,27 @@ button.addEventListener("mouseup", async (event) => {
   button.style.display = "none";
   event.stopPropagation();
 
-  const openaiSecretKey = await getOpenAiSectretKey();
-  const betterText = await getAnswer(
-    openaiSecretKey,
-    "Improve this text: " + selectedText
-  );
-
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
   const x = selectionRect.left + window.pageXOffset;
   const y = selectionRect.bottom + window.pageYOffset;
 
-  textarea.value = betterText;
+  textarea.value = "";
   textarea.style.left = `${x}px`;
   textarea.style.top = `${y + 10}px`;
   textarea.style.width = `${selectionRect.width}px`;
   textarea.style.display = "block";
   textarea.style.height = `${textarea.scrollHeight}px`;
+
+  const openaiSecretKey = await getOpenAiSectretKey();
+  await streamAnswer(
+    openaiSecretKey,
+    `Improve this text: "${selectedText}"`,
+    (partialResponse) => {
+      textarea.value += partialResponse;
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  );
 });
 
 document.addEventListener("mousedown", (event) => {
@@ -74,9 +78,9 @@ async function getOpenAiSectretKey() {
   });
 }
 
-async function getAnswer(openaiSecretKey, text) {
+async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
   document.body.style.cursor = "wait";
-  return fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -88,17 +92,26 @@ async function getAnswer(openaiSecretKey, text) {
       max_tokens: 1000,
       temperature: 0,
       n: 1,
-      stream: false,
+      stream: true,
     }),
-  })
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      document.body.style.cursor = "default";
-      return data.choices[0].message.content;
-    })
-    .catch(() => {
-      document.body.style.cursor = "default";
-    });
+  });
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  while (true) {
+    const { value } = await reader.read();
+    const sseString = decoder.decode(value);
+    if (sseString.includes("data: [DONE]")) break;
+    const sseArray = sseString
+      .split("\n")
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => JSON.parse(line.substring(6).trim()));
+
+    const partialTex = sseArray
+      .map((x) => x.choices[0].delta.content)
+      .filter((x) => x)
+      .join();
+
+    onPartialResponse(partialTex);
+  }
+  document.body.style.cursor = "default";
 }
