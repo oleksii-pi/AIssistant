@@ -14,12 +14,8 @@ button.addEventListener("mouseup", async (event) => {
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
   if (!selectedText) return;
-
-  const selectionRange = selection.getRangeAt(0);
-  const selectionRect = selectionRange.getBoundingClientRect();
-
-  event.stopPropagation();
   button.style.display = "none";
+  event.stopPropagation();
 
   const openaiSecretKey = await getOpenAiSectretKey();
   const betterText = await getAnswer(
@@ -27,6 +23,8 @@ button.addEventListener("mouseup", async (event) => {
     "Improve this text: " + selectedText
   );
 
+  const selectionRange = selection.getRangeAt(0);
+  const selectionRect = selectionRange.getBoundingClientRect();
   const x = selectionRect.left + window.pageXOffset;
   const y = selectionRect.bottom + window.pageYOffset;
 
