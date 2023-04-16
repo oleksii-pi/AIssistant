@@ -55,6 +55,7 @@ const buttons = userConfigs.map((config) => {
   b.requestTemplate = config.requestTemplate;
   document.body.appendChild(b);
   b.addEventListener("mouseup", buttonMouseUpHandler);
+  b.addEventListener("mousedown", (event) => event.preventDefault());
   return b;
 });
 
