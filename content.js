@@ -1,12 +1,5 @@
 const userConfigs = [
   {
-    buttonText: "T",
-    buttonHint: "Translate",
-    buttonBackground: "#5469d4",
-    requestTemplate: "Translate to russian: ",
-    aiModel: "gpt-3.5-turbo",
-  },
-  {
     buttonText: "W",
     buttonHint: "Write it better",
     buttonBackground: "#37447e",
@@ -92,7 +85,7 @@ document.addEventListener("mouseup", (event) => {
   const mouseX = event.clientX + window.pageXOffset;
   const mouseY = event.clientY + window.pageYOffset;
   buttons.forEach((button, i) => {
-    button.style.left = `${mouseX + 10}px`;
+    button.style.left = `${mouseX + 20}px`;
     button.style.top = `${mouseY + 10 + 32 * i}px`;
     button.style.display = "block";
   });
