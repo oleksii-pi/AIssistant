@@ -4,12 +4,14 @@ const userConfigs = [
     buttonHint: "Translate",
     buttonBackground: "#5469d4",
     requestTemplate: "Translate to russian: ",
+    aiModel: "gpt-3.5-turbo",
   },
   {
     buttonText: "W",
     buttonHint: "Write it better",
     buttonBackground: "#37447e",
     requestTemplate: "Improve this text: ",
+    aiModel: "gpt-3.5-turbo",
   },
 ];
 
@@ -37,7 +39,8 @@ const buttonMouseUpHandler = async (event) => {
   const openaiSecretKey = await getOpenAiSectretKey();
   await streamAnswer(
     openaiSecretKey,
-    `${button.requestTemplate}"${selectedText.replace(`"`, `""`)}"`,
+    button.config.aiModel,
+    `${button.config.requestTemplate}"${selectedText.replace(`"`, `""`)}"`,
     (partialResponse) => {
       textarea.value += partialResponse;
       textarea.style.height = `${textarea.scrollHeight}px`;
@@ -52,7 +55,7 @@ const buttons = userConfigs.map((config) => {
   b.innerText = config.buttonText;
   b.title = config.buttonHint;
   b.className = "writeItBetterButton";
-  b.requestTemplate = config.requestTemplate;
+  b.config = config;
   document.body.appendChild(b);
   b.addEventListener("mouseup", buttonMouseUpHandler);
   b.addEventListener("mousedown", (event) => event.preventDefault());
@@ -110,7 +113,7 @@ async function getOpenAiSectretKey() {
   });
 }
 
-async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
+async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
   document.body.style.cursor = "wait";
   abortController = new AbortController();
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -120,7 +123,7 @@ async function streamAnswer(openaiSecretKey, text, onPartialResponse) {
       Authorization: "Bearer " + openaiSecretKey,
     },
     body: JSON.stringify({
-      model: "gpt-3.5-turbo",
+      model: aiModel,
       messages: [{ role: "user", content: text }],
       max_tokens: 1000,
       temperature: 0,
