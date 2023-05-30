@@ -1,7 +1,9 @@
+// idea: screen scraping
+
 const userConfigs = [
   {
-    buttonText: "W",
-    buttonHint: "Write it better",
+    buttonText: "Write it better",
+    buttonHint: "Ask AI",
     buttonBackground: "#37447e",
     requestTemplate: "Improve this text: ",
     aiModel: "gpt-3.5-turbo",
@@ -119,7 +121,7 @@ async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
       model: aiModel,
       messages: [{ role: "user", content: text }],
       max_tokens: 1000,
-      temperature: 0,
+      temperature: 0.05,
       n: 1,
       stream: true,
     }),
