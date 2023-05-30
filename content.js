@@ -2,25 +2,19 @@
 
 const userConfigs = [
   {
-    buttonText: "Write it better",
+    aiPromt: "Improve this text",
     buttonHint: "Ask AI",
     buttonBackground: "#37447e",
-    requestTemplate: "Improve this text: ",
     aiModel: "gpt-3.5-turbo",
   },
 ];
 
-const buttonMouseUpHandler = async (event) => {
-  const selection = window.getSelection();
-  if (selection.type !== "Range") return;
-  const selectedText = selection.toString();
-  if (!selectedText) return;
+const requestAI = async (button) => {
   buttons.forEach((b) => (b.style.display = "none"));
-  event.stopPropagation();
-  const button = event.target;
+  const selectedText = button.selectedText;
+  if (!selectedText) return;
 
-  const selectionRange = selection.getRangeAt(0);
-  const selectionRect = selectionRange.getBoundingClientRect();
+  const selectionRect = button.selectionRect;
   const x = selectionRect.left + window.pageXOffset;
   const y = selectionRect.bottom + window.pageYOffset;
 
@@ -31,11 +25,13 @@ const buttonMouseUpHandler = async (event) => {
   textarea.style.display = "block";
   textarea.style.height = `${textarea.scrollHeight}px`;
 
-  const openaiSecretKey = await getOpenAiSectretKey();
+  const openaiSecretKey = await getOpenAiSecretKey();
+  const aiQuery = `${button.input.value}: ${selectedText}`;
+  console.log(aiQuery);
   await streamAnswer(
     openaiSecretKey,
     button.config.aiModel,
-    `${button.config.requestTemplate}"${selectedText.replace(`"`, `""`)}"`,
+    aiQuery,
     (partialResponse) => {
       textarea.value += partialResponse;
       textarea.style.height = `${textarea.scrollHeight}px`;
@@ -44,22 +40,39 @@ const buttonMouseUpHandler = async (event) => {
 };
 
 const buttons = userConfigs.map((config) => {
-  const b = document.createElement("button");
-  b.style.display = "none";
-  b.style.backgroundColor = config.buttonBackground;
-  b.innerText = config.buttonText;
-  b.title = config.buttonHint;
-  b.className = "writeItBetterButton";
-  b.config = config;
-  document.body.appendChild(b);
-  b.addEventListener("mouseup", buttonMouseUpHandler);
-  b.addEventListener("mousedown", (event) => event.preventDefault());
-  return b;
+  const aiRequestButton = document.createElement("button");
+  aiRequestButton.style.display = "none";
+  aiRequestButton.style.backgroundColor = config.buttonBackground;
+  aiRequestButton.title = config.buttonHint;
+  aiRequestButton.className = "aiRequestButton";
+  aiRequestButton.config = config;
+  document.body.appendChild(aiRequestButton);
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = config.aiPromt;
+  input.className = "aiRequestInput";
+  input.addEventListener("click", function () {
+    this.select();
+  });
+
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default form submission
+      requestAI(aiRequestButton);
+    }
+  });
+
+  aiRequestButton.appendChild(input);
+  aiRequestButton.input = input;
+  aiRequestButton.selected;
+
+  return aiRequestButton;
 });
 
 let textarea = document.createElement("textarea");
 textarea.style.display = "none";
-textarea.className = "writeItBetterBox";
+textarea.className = "aiAnswerBox";
 document.body.appendChild(textarea);
 
 let abortController;
@@ -84,16 +97,21 @@ document.addEventListener("mouseup", (event) => {
   const selectedText = selection.toString();
   if (!selectedText) return;
 
+  const selectionRange = selection.getRangeAt(0);
+  const selectionRect = selectionRange.getBoundingClientRect();
+
   const mouseX = event.clientX + window.pageXOffset;
   const mouseY = event.clientY + window.pageYOffset;
   buttons.forEach((button, i) => {
     button.style.left = `${mouseX + 20}px`;
     button.style.top = `${mouseY + 10 + 32 * i}px`;
     button.style.display = "block";
+    button.selectedText = selectedText;
+    button.selectionRect = selectionRect;
   });
 });
 
-async function getOpenAiSectretKey() {
+async function getOpenAiSecretKey() {
   return new Promise((resolve) => {
     chrome.storage.sync.get("openaiSecretKey", function (data) {
       let openaiSecretKey = data.openaiSecretKey;
