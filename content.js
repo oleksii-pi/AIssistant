@@ -23,6 +23,7 @@ const requestAI = async (button) => {
   textarea.style.top = `${y + 10}px`;
   textarea.style.width = `${selectionRect.width}px`;
   textarea.style.display = "block";
+  textarea.style.height = "auto";
   textarea.style.height = `${textarea.scrollHeight}px`;
 
   const openaiSecretKey = await getOpenAiSecretKey();
@@ -34,6 +35,7 @@ const requestAI = async (button) => {
     aiQuery,
     (partialResponse) => {
       textarea.value += partialResponse;
+      textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
     }
   );
