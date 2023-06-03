@@ -1,91 +1,52 @@
 // idea: screen scraping
+const userConfig = {
+  defaultAIPrompt: "Improve this text",
+  aiModel: "gpt-3.5-turbo",
+};
 
-const userConfigs = [
-  {
-    aiPromt: "Improve this text",
-    buttonHint: "Ask AI",
-    buttonBackground: "#37447e",
-    aiModel: "gpt-3.5-turbo",
-  },
-];
+const promptInput = createPromptInput(userConfig);
+const answerTextarea = createAnswerTextArea();
 
-const requestAI = async (button) => {
-  buttons.forEach((b) => (b.style.display = "none"));
-  const selectedText = button.selectedText;
+const requestAI = async () => {
+  promptInput.style.display = "none";
+  const selectedText = promptInput.selectedText;
   if (!selectedText) return;
 
-  const selectionRect = button.selectionRect;
+  const selectionRect = promptInput.selectionRect;
   const x = selectionRect.left + window.pageXOffset;
   const y = selectionRect.bottom + window.pageYOffset;
 
-  textarea.value = "";
-  textarea.style.left = `${x}px`;
-  textarea.style.top = `${y + 10}px`;
-  textarea.style.width = `${selectionRect.width}px`;
-  textarea.style.display = "block";
-  textarea.style.height = "auto";
-  textarea.style.height = `${textarea.scrollHeight}px`;
+  answerTextarea.value = "";
+  answerTextarea.style.left = `${x}px`;
+  answerTextarea.style.top = `${y + 10}px`;
+  answerTextarea.style.width = `${selectionRect.width}px`;
+  answerTextarea.style.display = "block";
+  answerTextarea.style.height = "auto";
+  answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
 
   const openaiSecretKey = await getOpenAiSecretKey();
-  const aiQuery = `${button.input.value}: ${selectedText}`;
+  const aiQuery = `${promptInput.value}: ${selectedText}`;
   console.log(aiQuery);
   await streamAnswer(
     openaiSecretKey,
-    button.config.aiModel,
+    promptInput.config.aiModel,
     aiQuery,
     (partialResponse) => {
-      textarea.value += partialResponse;
-      textarea.style.height = "auto";
-      textarea.style.height = `${textarea.scrollHeight}px`;
+      answerTextarea.value += partialResponse;
+      answerTextarea.style.height = "auto";
+      answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
     }
   );
 };
 
-const buttons = userConfigs.map((config) => {
-  const aiRequestButton = document.createElement("button");
-  aiRequestButton.style.display = "none";
-  aiRequestButton.style.backgroundColor = config.buttonBackground;
-  aiRequestButton.title = config.buttonHint;
-  aiRequestButton.className = "aiRequestButton";
-  aiRequestButton.config = config;
-  document.body.appendChild(aiRequestButton);
-
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = config.aiPromt;
-  input.className = "aiRequestInput";
-  input.addEventListener("click", function () {
-    this.select();
-  });
-
-  input.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault(); // Prevent the default form submission
-      requestAI(aiRequestButton);
-    }
-  });
-
-  aiRequestButton.appendChild(input);
-  aiRequestButton.input = input;
-  aiRequestButton.selected;
-
-  return aiRequestButton;
-});
-
-let textarea = document.createElement("textarea");
-textarea.style.display = "none";
-textarea.className = "aiAnswerBox";
-document.body.appendChild(textarea);
-
 let abortController;
-
 document.addEventListener("mousedown", (event) => {
-  if (buttons.filter((b) => b.contains(event.target)) == 0) {
-    buttons.forEach((b) => (b.style.display = "none"));
+  if (!promptInput.contains(event.target)) {
+    promptInput.style.display = "none";
   }
 
-  if (!textarea.contains(event.target)) {
-    textarea.style.display = "none";
+  if (!answerTextarea.contains(event.target)) {
+    answerTextarea.style.display = "none";
     if (abortController) {
       abortController.abort();
       abortController = null;
@@ -93,24 +54,41 @@ document.addEventListener("mousedown", (event) => {
   }
 });
 
-document.addEventListener("mouseup", (event) => {
+function renderPromptInput() {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
   if (!selectedText) return;
 
-  const selectionRange = selection.getRangeAt(0);
-  const selectionRect = selectionRange.getBoundingClientRect();
+  const selectionRect = selection.getRangeAt(0).getBoundingClientRect();
 
-  const mouseX = event.clientX + window.pageXOffset;
-  const mouseY = event.clientY + window.pageYOffset;
-  buttons.forEach((button, i) => {
-    button.style.left = `${mouseX + 20}px`;
-    button.style.top = `${mouseY + 10 + 32 * i}px`;
-    button.style.display = "block";
-    button.selectedText = selectedText;
-    button.selectionRect = selectionRect;
-  });
+  const left = selectionRect.left + window.pageXOffset;
+  const top = selectionRect.bottom + window.pageYOffset;
+  promptInput.style.left = `${left}px`;
+  promptInput.style.top = `${top}px`;
+  promptInput.style.display = "block";
+  promptInput.selectedText = selectedText;
+  promptInput.selectionRect = selectionRect;
+}
+
+let lastShiftPressTime = 0;
+let shiftPressCount = 0;
+window.addEventListener("keydown", function (event) {
+  if (event.key === "Shift") {
+    let currentTime = new Date().getTime();
+    if (currentTime - lastShiftPressTime <= 500) {
+      shiftPressCount++;
+      if (shiftPressCount === 2) {
+        renderPromptInput();
+        shiftPressCount = 0;
+      }
+    } else {
+      shiftPressCount = 1;
+    }
+    lastShiftPressTime = currentTime;
+  } else {
+    shiftPressCount = 0;
+  }
 });
 
 async function getOpenAiSecretKey() {
@@ -173,4 +151,28 @@ async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
     controller = null;
   }
   document.body.style.cursor = "default";
+}
+
+function createPromptInput(config) {
+  const input = document.createElement("input");
+  input.className = "aiRequestInput";
+  input.type = "text";
+  input.value = config.defaultAIPrompt;
+  input.config = config;
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent the default form submission
+      requestAI();
+    }
+  });
+  document.body.appendChild(input);
+  return input;
+}
+
+function createAnswerTextArea() {
+  const textarea = document.createElement("textarea");
+  textarea.style.display = "none";
+  textarea.className = "aiAnswerBox";
+  document.body.appendChild(textarea);
+  return textarea;
 }
