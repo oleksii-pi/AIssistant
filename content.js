@@ -43,10 +43,12 @@ let abortController;
 document.addEventListener("mousedown", (event) => {
   if (!promptInput.contains(event.target)) {
     promptInput.style.display = "none";
+    cleanUpTextHighlights();
   }
 
   if (!answerTextarea.contains(event.target)) {
     answerTextarea.style.display = "none";
+    cleanUpTextHighlights();
     if (abortController) {
       abortController.abort();
       abortController = null;
@@ -54,13 +56,74 @@ document.addEventListener("mousedown", (event) => {
   }
 });
 
+function getTextNodesInRange(range) {
+  const textNodes = [];
+  const nodeIterator = document.createNodeIterator(
+    range.commonAncestorContainer,
+    NodeFilter.SHOW_TEXT,
+    {
+      acceptNode: function (node) {
+        return range.intersectsNode(node)
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_REJECT;
+      },
+    }
+  );
+
+  let currentNode;
+  while ((currentNode = nodeIterator.nextNode())) {
+    textNodes.push(currentNode);
+  }
+
+  return textNodes;
+}
+
+function highlightSelectedText(range) {
+  const textNodes = getTextNodesInRange(range);
+
+  textNodes.forEach(function (node) {
+    const start = node === range.startContainer ? range.startOffset : 0;
+    const end = node === range.endContainer ? range.endOffset : node.length;
+
+    let textWithinSelection;
+    if (start > 0 || end < node.length) {
+      textWithinSelection = node.splitText(start);
+      textWithinSelection.splitText(end - start);
+    } else {
+      textWithinSelection = node;
+    }
+
+    const span = document.createElement("span");
+    span.className = "selected-text-highlight";
+    textWithinSelection.parentNode.replaceChild(span, textWithinSelection);
+    span.appendChild(textWithinSelection);
+  });
+}
+
+function cleanUpTextHighlights() {
+  let highlightedSpans = document.querySelectorAll(
+    "span.selected-text-highlight"
+  );
+
+  highlightedSpans.forEach(function (span) {
+    let parent = span.parentNode;
+    while (span.firstChild) {
+      parent.insertBefore(span.firstChild, span);
+    }
+    parent.removeChild(span);
+  });
+}
+
 function renderPromptInput() {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
   if (!selectedText) return;
 
-  const selectionRect = selection.getRangeAt(0).getBoundingClientRect();
+  const selectionRange = selection.getRangeAt(0);
+  const selectionRect = selectionRange.getBoundingClientRect();
+
+  highlightSelectedText(selectionRange);
 
   const left = selectionRect.left + window.pageXOffset;
   const top = selectionRect.bottom + window.pageYOffset;
@@ -69,6 +132,8 @@ function renderPromptInput() {
   promptInput.style.display = "block";
   promptInput.selectedText = selectedText;
   promptInput.selectionRect = selectionRect;
+  promptInput.select();
+  promptInput.focus();
 }
 
 let lastShiftPressTime = 0;
@@ -88,6 +153,12 @@ window.addEventListener("keydown", function (event) {
     lastShiftPressTime = currentTime;
   } else {
     shiftPressCount = 0;
+  }
+});
+
+document.addEventListener("mouseup", (event) => {
+  if (event.shiftKey) {
+    renderPromptInput();
   }
 });
 
@@ -155,7 +226,7 @@ async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
 
 function createPromptInput(config) {
   const input = document.createElement("input");
-  input.className = "aiRequestInput";
+  input.className = "ai-request-input";
   input.type = "text";
   input.value = config.defaultAIPrompt;
   input.config = config;
@@ -163,6 +234,10 @@ function createPromptInput(config) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission
       requestAI();
+    }
+    if (event.key === "Escape") {
+      promptInput.style.display = "none";
+      cleanUpTextHighlights();
     }
   });
   document.body.appendChild(input);
@@ -172,7 +247,7 @@ function createPromptInput(config) {
 function createAnswerTextArea() {
   const textarea = document.createElement("textarea");
   textarea.style.display = "none";
-  textarea.className = "aiAnswerBox";
+  textarea.className = "ai-answer-box";
   document.body.appendChild(textarea);
   return textarea;
 }

@@ -1,4 +1,4 @@
-.aiRequestInput {
+.ai-request-input {
   display: none;
   cursor: pointer !important;
   position: absolute !important;
@@ -21,7 +21,7 @@
   z-index: 2147483647 !important;
 }
 
-.aiAnswerBox {
+.ai-answer-box {
   cursor: pointer !important;
   position: absolute !important;
   padding: 7px !important;
@@ -32,4 +32,9 @@
   z-index: 2147483646 !important;
   overflow-y: hidden !important;
   min-width: 300px !important;
+}
+
+.selected-text-highlight {
+  background-color: #b7c2ff;
+  color: black;
 }
