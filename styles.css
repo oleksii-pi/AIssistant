@@ -1,5 +1,4 @@
 .ai-request-input {
-  display: none;
   cursor: pointer !important;
   position: absolute !important;
   width: 256px !important;
@@ -35,6 +34,6 @@
 }
 
 .selected-text-highlight {
-  background-color: #b7c2ff;
+  background-color: #b7c2ff; /* Light blue */
   color: black;
 }

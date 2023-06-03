@@ -4,21 +4,33 @@ const userConfig = {
   aiModel: "gpt-3.5-turbo",
 };
 
-const promptInput = createPromptInput(userConfig);
-const answerTextarea = createAnswerTextArea();
+async function getOpenAiSecretKey() {
+  return new Promise((resolve) => {
+    chrome.storage.sync.get("openaiSecretKey", function (data) {
+      let openaiSecretKey = data.openaiSecretKey;
+      if (!openaiSecretKey) {
+        openaiSecretKey = prompt(
+          "Please enter your OpenAI secret key. Enable paid plan here https://platform.openai.com/account/billing/overview and generate secret key here https://platform.openai.com/account/api-keys"
+        );
+        chrome.storage.sync.set({ openaiSecretKey }); //! store it only if success or it should be possible to reset
+      }
+      resolve(openaiSecretKey);
+    });
+  });
+}
 
-const requestAI = async () => {
+async function requestAI() {
   promptInput.style.display = "none";
   const selectedText = promptInput.selectedText;
   if (!selectedText) return;
 
   const selectionRect = promptInput.selectionRect;
-  const x = selectionRect.left + window.pageXOffset;
-  const y = selectionRect.bottom + window.pageYOffset;
+  const left = selectionRect.left + window.pageXOffset;
+  const top = selectionRect.bottom + window.pageYOffset;
 
   answerTextarea.value = "";
-  answerTextarea.style.left = `${x}px`;
-  answerTextarea.style.top = `${y + 10}px`;
+  answerTextarea.style.left = `${left}px`;
+  answerTextarea.style.top = `${top + 4}px`;
   answerTextarea.style.width = `${selectionRect.width}px`;
   answerTextarea.style.display = "block";
   answerTextarea.style.height = "auto";
@@ -37,7 +49,54 @@ const requestAI = async () => {
       answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
     }
   );
-};
+}
+
+async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
+  document.body.style.cursor = "wait";
+  abortController = new AbortController();
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + openaiSecretKey,
+    },
+    body: JSON.stringify({
+      model: aiModel,
+      messages: [{ role: "user", content: text }],
+      max_tokens: 1000,
+      temperature: 0.05,
+      n: 1,
+      stream: true,
+    }),
+    signal: abortController.signal,
+  });
+  abortController.signal.addEventListener("abort", () => {
+    document.body.style.cursor = "default";
+  });
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  try {
+    while (true) {
+      const { value } = await reader.read();
+      const sseString = decoder.decode(value);
+      if (sseString.includes("data: [DONE]")) break;
+      const sseArray = sseString
+        .split("\n")
+        .filter((line) => line.startsWith("data:"))
+        .map((line) => JSON.parse(line.substring(6).trim()));
+
+      const partialTex = sseArray
+        .map((x) => x.choices[0].delta.content)
+        .filter((x) => x)
+        .join("");
+      onPartialResponse(partialTex);
+    }
+  } catch (error) {
+    controller = null;
+  }
+  document.body.style.cursor = "default";
+}
 
 let abortController;
 document.addEventListener("mousedown", (event) => {
@@ -114,7 +173,7 @@ function cleanUpTextHighlights() {
   });
 }
 
-function renderPromptInput() {
+function showPromptInput() {
   const selection = window.getSelection();
   if (selection.type !== "Range") return;
   const selectedText = selection.toString();
@@ -128,13 +187,16 @@ function renderPromptInput() {
   const left = selectionRect.left + window.pageXOffset;
   const top = selectionRect.bottom + window.pageYOffset;
   promptInput.style.left = `${left}px`;
-  promptInput.style.top = `${top}px`;
+  promptInput.style.top = `${top + 4}px`;
   promptInput.style.display = "block";
   promptInput.selectedText = selectedText;
   promptInput.selectionRect = selectionRect;
   promptInput.select();
   promptInput.focus();
 }
+
+const promptInput = createPromptInput(userConfig);
+const answerTextarea = createAnswerTextArea();
 
 let lastShiftPressTime = 0;
 let shiftPressCount = 0;
@@ -144,7 +206,7 @@ window.addEventListener("keydown", function (event) {
     if (currentTime - lastShiftPressTime <= 500) {
       shiftPressCount++;
       if (shiftPressCount === 2) {
-        renderPromptInput();
+        showPromptInput();
         shiftPressCount = 0;
       }
     } else {
@@ -158,74 +220,13 @@ window.addEventListener("keydown", function (event) {
 
 document.addEventListener("mouseup", (event) => {
   if (event.shiftKey) {
-    renderPromptInput();
+    showPromptInput();
   }
 });
 
-async function getOpenAiSecretKey() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get("openaiSecretKey", function (data) {
-      let openaiSecretKey = data.openaiSecretKey;
-      if (!openaiSecretKey) {
-        openaiSecretKey = prompt(
-          "Please enter your OpenAI secret key. Enable paid plan here https://platform.openai.com/account/billing/overview and generate secret key here https://platform.openai.com/account/api-keys"
-        );
-        chrome.storage.sync.set({ openaiSecretKey }); //! store it only if success or it should be possible to reset
-      }
-      resolve(openaiSecretKey);
-    });
-  });
-}
-
-async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
-  document.body.style.cursor = "wait";
-  abortController = new AbortController();
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + openaiSecretKey,
-    },
-    body: JSON.stringify({
-      model: aiModel,
-      messages: [{ role: "user", content: text }],
-      max_tokens: 1000,
-      temperature: 0.05,
-      n: 1,
-      stream: true,
-    }),
-    signal: abortController.signal,
-  });
-  abortController.signal.addEventListener("abort", () => {
-    document.body.style.cursor = "default";
-  });
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  try {
-    while (true) {
-      const { value } = await reader.read();
-      const sseString = decoder.decode(value);
-      if (sseString.includes("data: [DONE]")) break;
-      const sseArray = sseString
-        .split("\n")
-        .filter((line) => line.startsWith("data:"))
-        .map((line) => JSON.parse(line.substring(6).trim()));
-
-      const partialTex = sseArray
-        .map((x) => x.choices[0].delta.content)
-        .filter((x) => x)
-        .join("");
-      onPartialResponse(partialTex);
-    }
-  } catch (error) {
-    controller = null;
-  }
-  document.body.style.cursor = "default";
-}
-
 function createPromptInput(config) {
   const input = document.createElement("input");
+  input.style.display = "none";
   input.className = "ai-request-input";
   input.type = "text";
   input.value = config.defaultAIPrompt;
