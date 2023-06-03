@@ -100,18 +100,18 @@ async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
 
 let abortController;
 document.addEventListener("mousedown", (event) => {
-  if (!promptInput.contains(event.target)) {
-    promptInput.style.display = "none";
-    cleanUpTextHighlights();
+  if (
+    promptInput.contains(event.target) ||
+    answerTextarea.contains(event.target)
+  ) {
+    return;
   }
-
-  if (!answerTextarea.contains(event.target)) {
-    answerTextarea.style.display = "none";
-    cleanUpTextHighlights();
-    if (abortController) {
-      abortController.abort();
-      abortController = null;
-    }
+  promptInput.style.display = "none";
+  answerTextarea.style.display = "none";
+  cleanUpTextHighlights();
+  if (abortController) {
+    abortController.abort();
+    abortController = null;
   }
 });
 
