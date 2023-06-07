@@ -106,71 +106,31 @@ document.addEventListener("mousedown", (event) => {
   ) {
     return;
   }
+
   promptInput.style.display = "none";
   answerTextarea.style.display = "none";
   cleanUpTextHighlights();
+  restoreSelection();
   if (abortController) {
     abortController.abort();
     abortController = null;
   }
 });
 
-function getTextNodesInRange(range) {
-  const textNodes = [];
-  const nodeIterator = document.createNodeIterator(
-    range.commonAncestorContainer,
-    NodeFilter.SHOW_TEXT,
-    {
-      acceptNode: function (node) {
-        return range.intersectsNode(node)
-          ? NodeFilter.FILTER_ACCEPT
-          : NodeFilter.FILTER_REJECT;
-      },
-    }
-  );
-
-  let currentNode;
-  while ((currentNode = nodeIterator.nextNode())) {
-    textNodes.push(currentNode);
-  }
-
-  return textNodes;
-}
-
-function highlightSelectedText(range) {
-  const textNodes = getTextNodesInRange(range);
-
-  textNodes.forEach(function (node) {
-    const start = node === range.startContainer ? range.startOffset : 0;
-    const end = node === range.endContainer ? range.endOffset : node.length;
-
-    let textWithinSelection;
-    if (start > 0 || end < node.length) {
-      textWithinSelection = node.splitText(start);
-      textWithinSelection.splitText(end - start);
-    } else {
-      textWithinSelection = node;
-    }
-
-    const span = document.createElement("span");
-    span.className = "selected-text-highlight";
-    textWithinSelection.parentNode.replaceChild(span, textWithinSelection);
-    span.appendChild(textWithinSelection);
-  });
-}
-
 function cleanUpTextHighlights() {
-  let highlightedSpans = document.querySelectorAll(
-    "span.selected-text-highlight"
-  );
+  document
+    .querySelectorAll(`div.selection-text-overlay`)
+    .forEach((element) => element.parentNode.removeChild(element));
+}
 
-  highlightedSpans.forEach(function (span) {
-    let parent = span.parentNode;
-    while (span.firstChild) {
-      parent.insertBefore(span.firstChild, span);
-    }
-    parent.removeChild(span);
-  });
+function createOverlay(rect) {
+  let div = document.createElement("div");
+  div.style.left = `${rect.left + window.pageXOffset}px`;
+  div.style.top = `${rect.top + window.pageYOffset}px`;
+  div.style.width = `${rect.width}px`;
+  div.style.height = `${rect.height}px`;
+  div.className = "selection-text-overlay";
+  document.body.appendChild(div);
 }
 
 function showPromptInput() {
@@ -181,14 +141,14 @@ function showPromptInput() {
 
   const selectionRange = selection.getRangeAt(0);
   const selectionRect = selectionRange.getBoundingClientRect();
-
-  highlightSelectedText(selectionRange);
+  createOverlay(selectionRect);
 
   const left = selectionRect.left + window.pageXOffset;
   const top = selectionRect.bottom + window.pageYOffset;
   promptInput.style.left = `${left}px`;
   promptInput.style.top = `${top + 4}px`;
   promptInput.style.display = "block";
+  promptInput.selectionRange = selectionRange;
   promptInput.selectedText = selectedText;
   promptInput.selectionRect = selectionRect;
   promptInput.select();
@@ -218,11 +178,14 @@ window.addEventListener("keydown", function (event) {
   }
 });
 
-document.addEventListener("mouseup", (event) => {
-  if (event.shiftKey) {
-    showPromptInput();
+function restoreSelection() {
+  if (promptInput.selectionRange) {
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(promptInput.selectionRange);
+    promptInput.selectionRange = null;
   }
-});
+}
 
 function createPromptInput(config) {
   const input = document.createElement("input");
@@ -239,6 +202,7 @@ function createPromptInput(config) {
     if (event.key === "Escape") {
       promptInput.style.display = "none";
       cleanUpTextHighlights();
+      restoreSelection();
     }
   });
   document.body.appendChild(input);

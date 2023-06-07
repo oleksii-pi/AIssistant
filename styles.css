@@ -20,6 +20,11 @@
   z-index: 2147483647 !important;
 }
 
+.selection-text-overlay {
+  position: absolute !important;
+  outline: 3px dashed rgba(255, 105, 180, 0.3) !important;
+}
+
 .ai-answer-box {
   cursor: pointer !important;
   position: absolute !important;
@@ -31,9 +36,13 @@
   z-index: 2147483646 !important;
   overflow-y: hidden !important;
   min-width: 300px !important;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
 }
 
 .selected-text-highlight {
   background-color: #b7c2ff; /* Light blue */
   color: black;
+  font-size: unset !important;
 }
