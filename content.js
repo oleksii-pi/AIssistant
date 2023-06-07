@@ -103,13 +103,6 @@ function showPromptInput() {
   promptInput.focus();
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "getSelectedText") {
-    const selectedText = window.getSelection().toString();
-    sendResponse({ selectedText });
-  }
-});
-
 const promptInput = createPromptInput(userConfig);
 const answerTextarea = createAnswerTextArea();
 
@@ -171,3 +164,10 @@ function createAnswerTextArea() {
   document.body.appendChild(textarea);
   return textarea;
 }
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === "getSelectedText") {
+    const selectedText = window.getSelection().toString();
+    sendResponse({ selectedText });
+  }
+});

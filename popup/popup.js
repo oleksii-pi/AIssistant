@@ -14,13 +14,17 @@ window.addEventListener("load", async () => {
   submitButton.addEventListener("click", submitButtonClick);
 });
 
+window.addEventListener("beforeunload", function (event) {
+  event.returnValue = "";
+});
+
 async function getSelectedTextInActiveTab() {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tab = tabs[0];
   const response = await new Promise((resolve) => {
     chrome.tabs.sendMessage(tab.id, { action: "getSelectedText" }, resolve);
   });
-  return response.selectedText;
+  return response?.selectedText ?? "";
 }
 
 async function registerInput(inputElementId) {
@@ -50,7 +54,6 @@ function triggerInputEvent(element) {
 async function submitButtonClick(event) {
   const openaiSecretKey = await getOpenAiSecretKey();
   const aiQuery = `${promptInput.value}: ${selectedText}`;
-  console.log(aiQuery);
   await streamAnswer(
     openaiSecretKey,
     promptInput.config.aiModel,
