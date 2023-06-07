@@ -7,23 +7,13 @@
 
     <div class="container">
       <div class="horizontal">
-        <select class="left" name="membership" id="membership">
-          <option value="WriteItBetter">Write it better</option>
-          <option value="TranslateToUA">Translate to Ukrainian</option>
-          <option value="TranslateToDE">Translate to German</option>
-          <option value="CoverLetter" selected>Cover letter</option>
-          <option value="Explain" selected>Explain</option>
-          <option value="Chat">Chat</option>
-        </select>
-        <!-- <Button class="configButton">
-          Config 
-        </Button> -->
+        <textarea class="top" id="aiPromptTextArea"></textarea> 
       </div>
       <div class="inputContainer top">
         <textarea class="top" id="inputTextArea"></textarea> 
-        <button class="submit">Submit</button>  
+        <button class="submitButton" id="submitButton">Submit</button>  
       </div>
-      <textarea class="bottom" id="suggestionTextArea" ></textarea> 
+      <textarea class="bottom" id="aiSuggestionTextArea" ></textarea> 
     </div>
   </body>
 </html>

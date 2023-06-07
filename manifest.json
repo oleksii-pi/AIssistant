@@ -1,8 +1,8 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Write it better",
   "version": "1.0",
-  "description": "Get a better version of selected text using ChatGPT API.",
+  "description": "Selected text and ask ChatGPT API about it.",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
@@ -10,13 +10,18 @@
   },
   "permissions": ["activeTab", "storage"],
   "host_permissions": ["https://api.openai.com/*"],
-  "browser_action": {
-    "default_popup": "popup\\popup.html"
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["content.js", "openAi.js"],
       "css": ["styles.css"]
     }
   ]

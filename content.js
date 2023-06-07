@@ -4,21 +4,6 @@ const userConfig = {
   aiModel: "gpt-3.5-turbo",
 };
 
-async function getOpenAiSecretKey() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get("openaiSecretKey", function (data) {
-      let openaiSecretKey = data.openaiSecretKey;
-      if (!openaiSecretKey) {
-        openaiSecretKey = prompt(
-          "Please enter your OpenAI secret key. Enable paid plan here https://platform.openai.com/account/billing/overview and generate secret key here https://platform.openai.com/account/api-keys"
-        );
-        chrome.storage.sync.set({ openaiSecretKey }); //! store it only if success or it should be possible to reset
-      }
-      resolve(openaiSecretKey);
-    });
-  });
-}
-
 async function requestAI() {
   promptInput.style.display = "none";
   const selectedText = promptInput.selectedText;
@@ -39,7 +24,13 @@ async function requestAI() {
   const openaiSecretKey = await getOpenAiSecretKey();
   const aiQuery = `${promptInput.value}: ${selectedText}`;
   console.log(aiQuery);
+  document.body.style.cursor = "wait";
+  abortController = new AbortController();
+  abortController.signal.addEventListener("abort", () => {
+    document.body.style.cursor = "default";
+  });
   await streamAnswer(
+    abortController,
     openaiSecretKey,
     promptInput.config.aiModel,
     aiQuery,
@@ -47,54 +38,11 @@ async function requestAI() {
       answerTextarea.value += partialResponse;
       answerTextarea.style.height = "auto";
       answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
+    },
+    (error) => {
+      abortController = null;
     }
   );
-}
-
-async function streamAnswer(openaiSecretKey, aiModel, text, onPartialResponse) {
-  document.body.style.cursor = "wait";
-  abortController = new AbortController();
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + openaiSecretKey,
-    },
-    body: JSON.stringify({
-      model: aiModel,
-      messages: [{ role: "user", content: text }],
-      max_tokens: 1000,
-      temperature: 0.05,
-      n: 1,
-      stream: true,
-    }),
-    signal: abortController.signal,
-  });
-  abortController.signal.addEventListener("abort", () => {
-    document.body.style.cursor = "default";
-  });
-
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  try {
-    while (true) {
-      const { value } = await reader.read();
-      const sseString = decoder.decode(value);
-      if (sseString.includes("data: [DONE]")) break;
-      const sseArray = sseString
-        .split("\n")
-        .filter((line) => line.startsWith("data:"))
-        .map((line) => JSON.parse(line.substring(6).trim()));
-
-      const partialTex = sseArray
-        .map((x) => x.choices[0].delta.content)
-        .filter((x) => x)
-        .join("");
-      onPartialResponse(partialTex);
-    }
-  } catch (error) {
-    controller = null;
-  }
   document.body.style.cursor = "default";
 }
 
@@ -154,6 +102,13 @@ function showPromptInput() {
   promptInput.select();
   promptInput.focus();
 }
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.action === "getSelectedText") {
+    const selectedText = window.getSelection().toString();
+    sendResponse({ selectedText });
+  }
+});
 
 const promptInput = createPromptInput(userConfig);
 const answerTextarea = createAnswerTextArea();
