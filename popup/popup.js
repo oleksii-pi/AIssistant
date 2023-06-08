@@ -12,11 +12,10 @@ window.addEventListener("load", async () => {
   const submitButton = document.getElementById("submitButton");
   submitButton.focus();
   submitButton.addEventListener("click", submitButtonClick);
-
-  await log("load");
 });
 
-window.addEventListener("beforeunload", function (event) {
+window.addEventListener("beforeunload", async function (event) {
+  //! stop receiving data
   event.returnValue = "";
 });
 

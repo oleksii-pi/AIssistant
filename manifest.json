@@ -21,7 +21,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js", "openAi.js"],
+      "js": ["openAi.js", "content.js"],
       "css": ["styles.css"]
     }
   ]
