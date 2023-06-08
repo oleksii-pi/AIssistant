@@ -12,6 +12,8 @@ window.addEventListener("load", async () => {
   const submitButton = document.getElementById("submitButton");
   submitButton.focus();
   submitButton.addEventListener("click", submitButtonClick);
+
+  await log("load");
 });
 
 window.addEventListener("beforeunload", function (event) {
@@ -25,6 +27,18 @@ async function getSelectedTextInActiveTab() {
     chrome.tabs.sendMessage(tab.id, { action: "getSelectedText" }, resolve);
   });
   return response?.selectedText ?? "";
+}
+
+async function log(message) {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  const tab = tabs[0];
+  await new Promise((resolve) => {
+    chrome.tabs.sendMessage(
+      tab.id,
+      { action: "log", payload: message },
+      resolve
+    );
+  });
 }
 
 async function registerInput(inputElementId) {

@@ -44,6 +44,8 @@ async function requestAI() {
     }
   );
   document.body.style.cursor = "default";
+  answerTextarea.focus();
+  answerTextarea.select();
 }
 
 let abortController;
@@ -148,7 +150,7 @@ function createPromptInput(config) {
       requestAI();
     }
     if (event.key === "Escape") {
-      promptInput.style.display = "none";
+      input.style.display = "none";
       cleanUpTextHighlights();
       restoreSelection();
     }
@@ -161,13 +163,24 @@ function createAnswerTextArea() {
   const textarea = document.createElement("textarea");
   textarea.style.display = "none";
   textarea.className = "ai-answer-box";
+  textarea.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+      textarea.style.display = "none";
+      cleanUpTextHighlights();
+      restoreSelection();
+    }
+  });
   document.body.appendChild(textarea);
   return textarea;
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "getSelectedText") {
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.action === "getSelectedText") {
     const selectedText = window.getSelection().toString();
     sendResponse({ selectedText });
+  }
+  if (message.action === "log") {
+    console.log(message.payload);
+    sendResponse({});
   }
 });
