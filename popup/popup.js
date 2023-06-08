@@ -1,11 +1,14 @@
+let popupAbortController;
+
 window.addEventListener("load", async () => {
   await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
-  await registerInput("aiSuggestionTextArea");
+  const aiSuggestionTextArea = await registerInput("aiSuggestionTextArea");
 
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText !== "") {
     input.value = selectedText;
+    aiSuggestionTextArea.value = "";
     triggerInputEvent(input);
   }
 
@@ -15,7 +18,10 @@ window.addEventListener("load", async () => {
 });
 
 window.addEventListener("beforeunload", async function (event) {
-  //! stop receiving data
+  if (popupAbortController) {
+    popupAbortController.abort();
+    popupAbortController = null;
+  }
   event.returnValue = "";
 });
 
@@ -66,15 +72,26 @@ function triggerInputEvent(element) {
 
 async function submitButtonClick(event) {
   const openaiSecretKey = await getOpenAiSecretKey();
-  const aiQuery = `${promptInput.value}: ${selectedText}`;
+  const aiPromptTextArea = document.getElementById("aiPromptTextArea");
+  const inputTextArea = document.getElementById("inputTextArea");
+  const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
+  aiSuggestionTextArea.value = "";
+  const aiQuery = `${aiPromptTextArea.value}: ${inputTextArea.value}`;
+  await log(aiQuery);
+  popupAbortController = new AbortController();
   await streamAnswer(
+    popupAbortController,
     openaiSecretKey,
-    promptInput.config.aiModel,
     aiQuery,
     (partialResponse) => {
-      answerTextarea.value += partialResponse;
-      answerTextarea.style.height = "auto";
-      answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
+      aiSuggestionTextArea.value += partialResponse;
+    },
+    async (error) => {
+      await log(error);
+      popupAbortController = null;
     }
   );
+  triggerInputEvent(aiSuggestionTextArea);
+  aiSuggestionTextArea.focus();
+  aiSuggestionTextArea.select();
 }
