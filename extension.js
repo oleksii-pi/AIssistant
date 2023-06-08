@@ -1,8 +1,9 @@
 // idea: screen scraping
 const userConfig = {
   defaultAIPrompt: "Improve this text",
-  aiModel: "gpt-3.5-turbo",
 };
+
+let abortController;
 
 async function requestAI() {
   promptInput.style.display = "none";
@@ -32,7 +33,6 @@ async function requestAI() {
   await streamAnswer(
     abortController,
     openaiSecretKey,
-    promptInput.config.aiModel,
     aiQuery,
     (partialResponse) => {
       answerTextarea.value += partialResponse;
@@ -48,7 +48,6 @@ async function requestAI() {
   answerTextarea.select();
 }
 
-let abortController;
 document.addEventListener("mousedown", (event) => {
   if (
     promptInput.contains(event.target) ||

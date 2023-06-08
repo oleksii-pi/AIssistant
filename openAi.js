@@ -1,7 +1,10 @@
+const openAiConfig = {
+  aiModel: "gpt-3.5-turbo",
+};
+
 async function streamAnswer(
   abortController,
   openaiSecretKey,
-  aiModel,
   text,
   onPartialResponse,
   onError
@@ -13,7 +16,7 @@ async function streamAnswer(
       Authorization: "Bearer " + openaiSecretKey,
     },
     body: JSON.stringify({
-      model: aiModel,
+      model: openAiConfig.aiModel,
       messages: [{ role: "user", content: text }],
       max_tokens: 1000,
       temperature: 0.05,
