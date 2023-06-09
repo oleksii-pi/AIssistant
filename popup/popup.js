@@ -5,18 +5,25 @@ window.addEventListener("load", async () => {
   await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
   const aiSuggestionTextArea = await registerInput("aiSuggestionTextArea");
+  const submitButton = document.getElementById("submitButton");
+  submitButton.addEventListener("click", submitButtonClick);
+
+  input.addEventListener("input", () => {
+    aiSuggestionTextArea.value = "";
+    storeInputValue(aiSuggestionTextArea);
+  });
 
   const selectedText = await getSelectedTextInActiveTab();
-  if (selectedText !== "") {
+  if (selectedText == "") {
+    input.focus();
+    input.select();
+  } else {
     input.value = selectedText;
     await storeInputValue(input);
     aiSuggestionTextArea.value = "";
     await storeInputValue(aiSuggestionTextArea);
+    submitButton.focus();
   }
-
-  const submitButton = document.getElementById("submitButton");
-  submitButton.focus();
-  submitButton.addEventListener("click", submitButtonClick);
 });
 
 // window.addEventListener("beforeunload", async function (event) {
