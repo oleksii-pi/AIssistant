@@ -8,8 +8,9 @@ window.addEventListener("load", async () => {
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText !== "") {
     input.value = selectedText;
+    await storeInputValue(input);
     aiSuggestionTextArea.value = "";
-    triggerInputEvent(input);
+    await storeInputValue(aiSuggestionTextArea);
   }
 
   const submitButton = document.getElementById("submitButton");
@@ -17,13 +18,14 @@ window.addEventListener("load", async () => {
   submitButton.addEventListener("click", submitButtonClick);
 });
 
-window.addEventListener("beforeunload", async function (event) {
-  if (popupAbortController) {
-    popupAbortController.abort();
-    popupAbortController = null;
-  }
-  event.returnValue = "";
-});
+// window.addEventListener("beforeunload", async function (event) {
+//   if (popupAbortController) {
+//     popupAbortController.abort();
+//     popupAbortController = null;
+//   }
+//   //event.returnValue = "";
+//   await log("popup unloaded");
+// });
 
 async function getSelectedTextInActiveTab() {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -49,25 +51,15 @@ async function log(message) {
 async function registerInput(inputElementId) {
   const input = document.getElementById(inputElementId);
   const inputKey = `popupState.${inputElementId}`;
-
-  const storageData = await new Promise((resolve) => {
-    chrome.storage.local.get([inputKey], resolve);
-  });
-  input.value = storageData[inputKey] ?? "";
-
-  input.addEventListener("input", () =>
-    chrome.storage.local.set({ [inputKey]: input.value })
-  );
-
+  input.value = (await getStorage(inputKey)) ?? "";
+  input.addEventListener("input", () => storeInputValue(input));
   return input;
 }
 
-function triggerInputEvent(element) {
-  const inputEvent = new Event("input", {
-    bubbles: true,
-    cancelable: true,
-  });
-  element.dispatchEvent(inputEvent);
+async function storeInputValue(input) {
+  const inputElementId = input.id;
+  const inputKey = `popupState.${inputElementId}`;
+  await setStorage(inputKey, input.value);
 }
 
 async function submitButtonClick(event) {
@@ -76,6 +68,7 @@ async function submitButtonClick(event) {
   const inputTextArea = document.getElementById("inputTextArea");
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
   aiSuggestionTextArea.value = "";
+  await storeInputValue(aiSuggestionTextArea);
   const aiQuery = `${aiPromptTextArea.value}: ${inputTextArea.value}`;
   await log(aiQuery);
   popupAbortController = new AbortController();
@@ -91,7 +84,33 @@ async function submitButtonClick(event) {
       popupAbortController = null;
     }
   );
-  triggerInputEvent(aiSuggestionTextArea);
+  await storeInputValue(aiSuggestionTextArea);
   aiSuggestionTextArea.focus();
   aiSuggestionTextArea.select();
+}
+
+// storage:
+
+function setStorage(key, value) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set({ [key]: value }, () => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function getStorage(key) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get([key], (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result[key]);
+      }
+    });
+  });
 }
