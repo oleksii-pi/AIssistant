@@ -10,6 +10,9 @@ select {
 textarea {
   padding: 8px;
   border-color: #eee;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
 }
 
 textarea:focus {
@@ -61,4 +64,8 @@ button:focus {
 
 .half {
   flex: 0.5;
+}
+
+#aiSuggestionTextArea {
+  background-color: #fffbcd !important;
 }
