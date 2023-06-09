@@ -9,6 +9,15 @@ select {
 }
 textarea {
   padding: 8px;
+  border-color: #eee;
+}
+
+textarea:focus {
+  outline: 2px solid lightblue;
+}
+
+button:focus {
+  outline: 2px solid lightgreen;
 }
 
 .container {
@@ -48,4 +57,8 @@ textarea {
 .left,
 .right {
   flex: 1;
+}
+
+.half {
+  flex: 0.5;
 }

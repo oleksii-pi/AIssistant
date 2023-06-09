@@ -1,3 +1,4 @@
+//! store templates
 let popupAbortController;
 
 window.addEventListener("load", async () => {
