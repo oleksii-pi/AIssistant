@@ -20,7 +20,7 @@ textarea:focus {
 }
 
 button:focus {
-  outline: 2px solid lightgreen;
+  outline: 2px solid rgb(64, 255, 0);
 }
 
 .container {
@@ -68,4 +68,11 @@ button:focus {
 
 #aiSuggestionTextArea {
   background-color: #fffbcd !important;
+}
+
+#submitButton {
+  background-color: #5469d4;
+  color: white;
+  border-radius: 4px;
+  border: none;
 }
