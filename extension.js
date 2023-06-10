@@ -1,6 +1,6 @@
 // idea: screen scraping
 const userConfig = {
-  defaultAIPrompt: "Improve this text",
+  defaultAIPrompt: "Improve this text:",
 };
 
 let abortController;
@@ -23,7 +23,7 @@ async function requestAI() {
   answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
 
   const openaiSecretKey = await getOpenAiSecretKey();
-  const aiQuery = `${promptInput.value}: ${selectedText}`;
+  const aiQuery = `${promptInput.value} ${selectedText}`;
   console.log(aiQuery);
   document.body.style.cursor = "wait";
   abortController = new AbortController();

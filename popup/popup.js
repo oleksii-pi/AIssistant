@@ -1,5 +1,5 @@
 //! store templates
-let popupAbortController;
+let popupAbortController = null;
 
 window.addEventListener("load", async () => {
   await registerInput("aiPromptTextArea");
@@ -71,13 +71,22 @@ async function storeInputValue(input) {
 }
 
 async function submitButtonClick(event) {
+  const submitButton = event.target;
+  if (popupAbortController !== null) {
+    submitButton.textContent = "Submit";
+    popupAbortController.abort();
+    popupAbortController = null;
+    return;
+  }
+  submitButton.textContent = "Cancel";
+
   const openaiSecretKey = await getOpenAiSecretKey();
   const aiPromptTextArea = document.getElementById("aiPromptTextArea");
   const inputTextArea = document.getElementById("inputTextArea");
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
   aiSuggestionTextArea.value = "";
   await storeInputValue(aiSuggestionTextArea);
-  const aiQuery = `${aiPromptTextArea.value}: ${inputTextArea.value}`;
+  const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
   await log(aiQuery);
   popupAbortController = new AbortController();
   await streamAnswer(
@@ -95,6 +104,9 @@ async function submitButtonClick(event) {
   await storeInputValue(aiSuggestionTextArea);
   aiSuggestionTextArea.focus();
   aiSuggestionTextArea.select();
+  popupAbortController = null;
+
+  submitButton.textContent = "Submit";
 }
 
 // storage:
