@@ -2,16 +2,14 @@
 let popupAbortController = null;
 
 window.addEventListener("load", async () => {
-  await registerInput("aiPromptTextArea");
+  const aiPromptTextArea = await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
   const aiSuggestionTextArea = await registerInput("aiSuggestionTextArea");
   const submitButton = document.getElementById("submitButton");
   submitButton.addEventListener("click", submitButtonClick);
 
-  input.addEventListener("input", () => {
-    aiSuggestionTextArea.value = "";
-    storeInputValue(aiSuggestionTextArea);
-  });
+  input.addEventListener("input", cleanupAiSuggestion);
+  aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
 
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText == "") {
@@ -20,8 +18,7 @@ window.addEventListener("load", async () => {
   } else {
     input.value = selectedText;
     await storeInputValue(input);
-    aiSuggestionTextArea.value = "";
-    await storeInputValue(aiSuggestionTextArea);
+    await cleanupAiSuggestion();
     submitButton.focus();
   }
 });
@@ -34,6 +31,11 @@ window.addEventListener("load", async () => {
 //   //event.returnValue = "";
 //   await log("popup unloaded");
 // });
+
+async function cleanupAiSuggestion() {
+  aiSuggestionTextArea.value = "";
+  await storeInputValue(aiSuggestionTextArea);
+}
 
 async function getSelectedTextInActiveTab() {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -84,8 +86,7 @@ async function submitButtonClick(event) {
   const aiPromptTextArea = document.getElementById("aiPromptTextArea");
   const inputTextArea = document.getElementById("inputTextArea");
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
-  aiSuggestionTextArea.value = "";
-  await storeInputValue(aiSuggestionTextArea);
+  await cleanupAiSuggestion();
   const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
   await log(aiQuery);
   popupAbortController = new AbortController();
