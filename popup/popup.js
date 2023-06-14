@@ -37,6 +37,7 @@ window.addEventListener("load", async () => {
 // });
 
 async function cleanupAiSuggestion() {
+  const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
   aiSuggestionTextArea.value = "";
   await storeInputValue(aiSuggestionTextArea);
 }
@@ -100,6 +101,7 @@ async function submitButtonClick(event) {
   const inputTextArea = document.getElementById("inputTextArea");
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
 
+  await storeInputValue(aiPromptTextArea);
   await storeAIPromptToMRU();
   await cleanupAiSuggestion();
   const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
