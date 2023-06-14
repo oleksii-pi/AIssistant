@@ -10,6 +10,10 @@ window.addEventListener("load", async () => {
 
   input.addEventListener("input", cleanupAiSuggestion);
   aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
+  enableAutoComplete(
+    aiPromptTextArea,
+    async () => (await getStorage("promptHistory")) ?? []
+  );
 
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText == "") {
@@ -35,6 +39,15 @@ window.addEventListener("load", async () => {
 async function cleanupAiSuggestion() {
   aiSuggestionTextArea.value = "";
   await storeInputValue(aiSuggestionTextArea);
+}
+
+async function storeAIPromptToMRU() {
+  const aiPromptTextArea = document.getElementById("aiPromptTextArea");
+  const aiPrompt = aiPromptTextArea.value;
+  const currentPromptsHistory = (await getStorage("promptHistory")) ?? [];
+  let newPromptHistory = currentPromptsHistory.filter((x) => x !== aiPrompt);
+  newPromptHistory.unshift(aiPrompt);
+  await setStorage("promptHistory", newPromptHistory);
 }
 
 async function getSelectedTextInActiveTab() {
@@ -86,6 +99,8 @@ async function submitButtonClick(event) {
   const aiPromptTextArea = document.getElementById("aiPromptTextArea");
   const inputTextArea = document.getElementById("inputTextArea");
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
+
+  await storeAIPromptToMRU();
   await cleanupAiSuggestion();
   const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
   await log(aiQuery);

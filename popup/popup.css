@@ -67,7 +67,7 @@ button:focus {
 }
 
 #aiSuggestionTextArea {
-  background-color: #fffbcd !important;
+  background-color: #fffbcd;
 }
 
 #submitButton {
