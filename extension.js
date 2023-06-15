@@ -4,6 +4,8 @@ const userConfig = {
 };
 
 let abortController;
+const promptInput = createPromptInput(userConfig);
+const answerTextarea = createAnswerTextArea();
 
 async function requestAI() {
   promptInput.style.display = "none";
@@ -104,8 +106,7 @@ function showPromptInput() {
   promptInput.focus();
 }
 
-const promptInput = createPromptInput(userConfig);
-const answerTextarea = createAnswerTextArea();
+
 
 let lastShiftPressTime = 0;
 let shiftPressCount = 0;
@@ -161,7 +162,7 @@ function createPromptInput(config) {
 function createAnswerTextArea() {
   const textarea = document.createElement("textarea");
   textarea.style.display = "none";
-  textarea.className = "ai-answer-box";
+  textarea.className = "ai-answer-input";
   textarea.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
       textarea.style.display = "none";
