@@ -14,8 +14,11 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
     removeSuggestions();
     suggestionsContainer = document.createElement("div");
     suggestionsContainer.classList.add("autocomplete-suggestions");
-    textAreaInput.parentNode.style.position = "relative";
-    suggestionsContainer.style.top = `${textAreaInput.offsetHeight}px`;
+    suggestionsContainer.style.top = `${
+      textAreaInput.offsetTop + textAreaInput.offsetHeight
+    }px`;
+    suggestionsContainer.style.left = `${textAreaInput.offsetLeft}px`;
+
     textAreaInput.parentNode.appendChild(suggestionsContainer);
   }
 

@@ -1,12 +1,16 @@
 .autocomplete-suggestions {
-  z-index: 1;
-  position: absolute;
-  border: 1px solid #ccc;
+  z-index: 2147483647 !important;
+  position: absolute !important;
+  border: 1px solid #ccc !important;
 }
 .autocomplete-suggestion {
-  padding: 10px 4px 10px 4px;
-  background-color: white;
+  padding: 10px 4px 10px 4px !important;
+  background-color: white !important;
+  font-size: small !important;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
 }
 .active {
-  background-color: #eee;
+  background-color: #eee !important;
 }
