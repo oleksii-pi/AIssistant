@@ -7,10 +7,14 @@ let abortController;
 const promptInput = createPromptInput(userConfig);
 const answerTextarea = createAnswerTextArea();
 
+enableAutoComplete(promptInput, getAIPromptHistory);
+
 async function requestAI() {
   promptInput.style.display = "none";
   const selectedText = promptInput.selectedText;
   if (!selectedText) return;
+
+  await storeAIPromptToMRU(promptInput.value);
 
   const selectionRect = promptInput.selectionRect;
   const left = selectionRect.left + window.pageXOffset;
@@ -106,8 +110,6 @@ function showPromptInput() {
   promptInput.focus();
 }
 
-
-
 let lastShiftPressTime = 0;
 let shiftPressCount = 0;
 window.addEventListener("keydown", function (event) {
@@ -138,11 +140,12 @@ function restoreSelection() {
 }
 
 function createPromptInput(config) {
+  //const aiPromptHistory = await getAIPromptHistory();
   const input = document.createElement("input");
   input.style.display = "none";
   input.className = "ai-request-input";
   input.type = "text";
-  input.value = config.defaultAIPrompt;
+  //input.value = aiPromptHistory.length > 0 ? aiPromptHistory[0] : config.defaultAIPrompt;
   input.config = config;
   input.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {

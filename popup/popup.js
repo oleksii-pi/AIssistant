@@ -10,10 +10,7 @@ window.addEventListener("load", async () => {
 
   input.addEventListener("input", cleanupAiSuggestion);
   aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
-  enableAutoComplete(
-    aiPromptTextArea,
-    async () => (await getStorage("promptHistory")) ?? []
-  );
+  enableAutoComplete(aiPromptTextArea, getAIPromptHistory);
 
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText == "") {
@@ -40,15 +37,6 @@ async function cleanupAiSuggestion() {
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
   aiSuggestionTextArea.value = "";
   await storeInputValue(aiSuggestionTextArea);
-}
-
-async function storeAIPromptToMRU() {
-  const aiPromptTextArea = document.getElementById("aiPromptTextArea");
-  const aiPrompt = aiPromptTextArea.value;
-  const currentPromptsHistory = (await getStorage("promptHistory")) ?? [];
-  let newPromptHistory = currentPromptsHistory.filter((x) => x !== aiPrompt);
-  newPromptHistory.unshift(aiPrompt);
-  await setStorage("promptHistory", newPromptHistory);
 }
 
 async function getSelectedTextInActiveTab() {
@@ -102,7 +90,7 @@ async function submitButtonClick(event) {
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
 
   await storeInputValue(aiPromptTextArea);
-  await storeAIPromptToMRU();
+  await storeAIPromptToMRU(aiPromptTextArea.value);
   await cleanupAiSuggestion();
   const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
   await log(aiQuery);
@@ -125,30 +113,4 @@ async function submitButtonClick(event) {
   popupAbortController = null;
 
   submitButton.textContent = "Submit";
-}
-
-// storage:
-
-function setStorage(key, value) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set({ [key]: value }, () => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-function getStorage(key) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get([key], (result) => {
-      if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError);
-      } else {
-        resolve(result[key]);
-      }
-    });
-  });
 }
