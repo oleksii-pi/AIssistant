@@ -11,6 +11,9 @@
   background-color: #5469d4 !important;
   color: white !important;
   outline: none !important;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
   font-size: 14px !important;
   font-weight: 500 !important;
   min-height: unset !important;
@@ -20,12 +23,14 @@
   z-index: 2147483647 !important;
 }
 
+
+
 .selection-text-overlay {
   position: absolute !important;
   outline: 3px dashed rgba(255, 105, 180, 0.3) !important;
 }
 
-.ai-answer-box {
+.ai-answer-input {
   cursor: pointer !important;
   position: absolute !important;
   padding: 7px !important;
@@ -39,7 +44,18 @@
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
     Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
+
+  appearance: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
+
+.ai-request-input::selection,
+.ai-answer-input::selection {
+  background: #3390FF !important;
+  color: white !important;
+}
+
 
 .selected-text-highlight {
   background-color: #b7c2ff; /* Light blue */

@@ -4,7 +4,7 @@
   border: 1px solid #ccc;
 }
 .autocomplete-suggestion {
-  padding: 2px;
+  padding: 10px 4px 10px 4px;
   background-color: white;
 }
 .active {
