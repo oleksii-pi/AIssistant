@@ -83,5 +83,4 @@ function enableAutoComplete(textAreaInput, getDataAsync) {
   });
 
   textAreaInput.addEventListener("blur", removeSuggestions);
-  textAreaInput.addEventListener("focus", createSuggestionsContainer);
 }
