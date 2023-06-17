@@ -6,6 +6,7 @@
 .autocomplete-suggestion {
   padding: 10px 4px 10px 4px !important;
   background-color: white !important;
+  color: black !important;
   font-size: small !important;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
