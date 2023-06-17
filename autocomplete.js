@@ -10,8 +10,17 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
     }
   }
 
-  function createSuggestionsContainer() {
+  async function createSuggestionsContainer() {
+    const inputValue = textAreaInput.value;
+
+    const matches = (await getDataCallback()).filter((str) =>
+      str.toLowerCase().includes(inputValue.toLowerCase())
+    );
+
     removeSuggestions();
+    if (matches.length === 0) {
+      return;
+    }
     suggestionsContainer = document.createElement("div");
     suggestionsContainer.classList.add("autocomplete-suggestions");
     suggestionsContainer.style.top = `${
@@ -20,38 +29,18 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
     suggestionsContainer.style.left = `${textAreaInput.offsetLeft}px`;
 
     textAreaInput.parentNode.appendChild(suggestionsContainer);
-  }
-
-  textAreaInput.addEventListener("input", async function () {
-    const val = this.value;
-    if (!val) {
-      removeSuggestions();
-      return;
-    }
-
-    const matches = (await getDataCallback()).filter((str) =>
-      str.toLowerCase().includes(val.toLowerCase())
-    );
-
-    if (matches.length === 0) {
-      removeSuggestions();
-      return;
-    }
-
-    createSuggestionsContainer();
 
     matches.forEach((match) => {
       const item = document.createElement("div");
       item.innerText = match;
       item.classList.add("autocomplete-suggestion");
 
-      item.addEventListener("click", function () {
-        textAreaInput.value = this.innerText;
-        removeSuggestions();
-      });
-
       suggestionsContainer.appendChild(item);
     });
+  }
+
+  textAreaInput.addEventListener("input", async function () {
+    await createSuggestionsContainer();
   });
 
   textAreaInput.addEventListener("keydown", function (e) {
@@ -69,6 +58,7 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
         }
       } else if (e.key === "Enter") {
         e.preventDefault();
+        console.log("autocomplete keydown");
         if (activeSuggestionIndex >= 0) {
           textAreaInput.value =
             suggestionsContainer.children[activeSuggestionIndex].innerText;
@@ -88,4 +78,5 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
   });
 
   textAreaInput.addEventListener("blur", removeSuggestions);
+  textAreaInput.addEventListener("focus", createSuggestionsContainer);
 }

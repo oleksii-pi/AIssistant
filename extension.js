@@ -147,10 +147,10 @@ function createPromptInput(config) {
   input.type = "text";
   //input.value = aiPromptHistory.length > 0 ? aiPromptHistory[0] : config.defaultAIPrompt;
   input.config = config;
-  input.addEventListener("keydown", function (event) {
+  input.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission
-      requestAI();
+      await requestAI();
     }
     if (event.key === "Escape") {
       input.style.display = "none";
