@@ -1,8 +1,11 @@
-function enableAutoComplete(textAreaInput, getDataCallback) {
+function enableAutoComplete(textAreaInput, getDataAsync) {
   let activeSuggestionIndex = -1;
   let suggestionsContainer;
 
+  textAreaInput.isAutoCompleteVisible = false;
+
   function removeSuggestions() {
+    textAreaInput.isAutoCompleteVisible = false;
     if (suggestionsContainer) {
       suggestionsContainer.remove();
       suggestionsContainer = null;
@@ -13,11 +16,14 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
   async function createSuggestionsContainer() {
     const inputValue = textAreaInput.value;
 
-    const matches = (await getDataCallback()).filter((str) =>
+    const matches = (await getDataAsync()).filter((str) =>
       str.toLowerCase().includes(inputValue.toLowerCase())
     );
 
     removeSuggestions();
+
+    textAreaInput.isAutoCompleteVisible = matches.length !== 0;
+
     if (matches.length === 0) {
       return;
     }
@@ -58,7 +64,6 @@ function enableAutoComplete(textAreaInput, getDataCallback) {
         }
       } else if (e.key === "Enter") {
         e.preventDefault();
-        console.log("autocomplete keydown");
         if (activeSuggestionIndex >= 0) {
           textAreaInput.value =
             suggestionsContainer.children[activeSuggestionIndex].innerText;
