@@ -7,7 +7,7 @@ let abortController;
 const promptInput = createPromptInput(userConfig);
 const answerTextarea = createAnswerTextArea();
 
-enableAutoComplete(promptInput, getAIPromptHistory);
+enableAutoComplete(promptInput, getAIPromptHistory, deleteMRUItem);
 
 async function requestAI() {
   promptInput.style.display = "none";
@@ -140,11 +140,11 @@ function restoreSelection() {
 }
 
 function createPromptInput(config) {
-  //const aiPromptHistory = await getAIPromptHistory();
   const input = document.createElement("input");
   input.style.display = "none";
   input.className = "ai-request-input";
   input.type = "text";
+  //const aiPromptHistory = await getAIPromptHistory();
   //input.value = aiPromptHistory.length > 0 ? aiPromptHistory[0] : config.defaultAIPrompt;
   input.config = config;
   input.addEventListener("keydown", async function (event) {

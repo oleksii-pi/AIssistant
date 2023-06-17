@@ -24,10 +24,18 @@ function getStorage(key) {
 
 async function storeAIPromptToMRU(aiPromptText) {
   const currentPromptsHistory = (await getStorage("promptHistory")) ?? [];
-  let newPromptHistory = currentPromptsHistory.filter(
+  const newPromptHistory = currentPromptsHistory.filter(
     (x) => x !== aiPromptText
   );
   newPromptHistory.unshift(aiPromptText);
+  await setStorage("promptHistory", newPromptHistory);
+}
+
+async function deleteMRUItem(itemText) {
+  const currentPromptsHistory = (await getStorage("promptHistory")) ?? [];
+  const newPromptHistory = currentPromptsHistory.filter(
+    (x) => x.trim() !== itemText.trim()
+  );
   await setStorage("promptHistory", newPromptHistory);
 }
 

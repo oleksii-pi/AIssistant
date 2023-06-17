@@ -1,4 +1,4 @@
-function enableAutoComplete(textAreaInput, getDataAsync) {
+function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
   let activeSuggestionIndex = -1;
   let suggestionsContainer;
 
@@ -39,7 +39,22 @@ function enableAutoComplete(textAreaInput, getDataAsync) {
     matches.forEach((match) => {
       const item = document.createElement("div");
       item.innerText = match;
+      item.suggestionText = match;
       item.classList.add("autocomplete-suggestion");
+
+      const deleteButton = document.createElement("button");
+      deleteButton.innerHTML = "&times;";
+      deleteButton.classList.add("delete-button");
+
+      deleteButton.addEventListener("mousedown", async function (e) {
+        e.stopPropagation();
+        const activeSuggestionText = e.target.parentNode.suggestionText;
+        await deleteItemAsync(activeSuggestionText);
+        removeSuggestions();
+        await createSuggestionsContainer();
+      });
+
+      item.appendChild(deleteButton);
 
       suggestionsContainer.appendChild(item);
     });
@@ -49,7 +64,7 @@ function enableAutoComplete(textAreaInput, getDataAsync) {
     await createSuggestionsContainer();
   });
 
-  textAreaInput.addEventListener("keydown", function (e) {
+  textAreaInput.addEventListener("keydown", async function (e) {
     if (suggestionsContainer && suggestionsContainer.children.length) {
       if (e.key === "ArrowDown") {
         activeSuggestionIndex =
@@ -66,7 +81,7 @@ function enableAutoComplete(textAreaInput, getDataAsync) {
         e.preventDefault();
         if (activeSuggestionIndex >= 0) {
           textAreaInput.value =
-            suggestionsContainer.children[activeSuggestionIndex].innerText;
+            suggestionsContainer.children[activeSuggestionIndex].suggestionText;
           removeSuggestions();
         }
       }
