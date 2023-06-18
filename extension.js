@@ -63,6 +63,7 @@ document.addEventListener("mousedown", (event) => {
   }
 
   promptInput.style.display = "none";
+  promptInput.hideAutoComplete();
   answerTextarea.style.display = "none";
   cleanUpTextHighlights();
   restoreSelection();

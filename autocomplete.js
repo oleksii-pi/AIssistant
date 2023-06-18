@@ -3,6 +3,7 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
   let suggestionsContainer;
 
   textAreaInput.isAutoCompleteActive = false;
+  textAreaInput.hideAutoComplete = removeSuggestions;
 
   function removeSuggestions() {
     textAreaInput.isAutoCompleteActive = false;
