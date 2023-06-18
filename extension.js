@@ -150,7 +150,7 @@ function createPromptInput(config) {
   input.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission
-      if (input.isAutoCompleteVisible) {
+      if (input.isAutoCompleteActive) {
         return;
       }
       await requestAI();

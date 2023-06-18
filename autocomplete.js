@@ -2,10 +2,10 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
   let activeSuggestionIndex = -1;
   let suggestionsContainer;
 
-  textAreaInput.isAutoCompleteVisible = false;
+  textAreaInput.isAutoCompleteActive = false;
 
   function removeSuggestions() {
-    textAreaInput.isAutoCompleteVisible = false;
+    textAreaInput.isAutoCompleteActive = false;
     if (suggestionsContainer) {
       suggestionsContainer.remove();
       suggestionsContainer = null;
@@ -21,8 +21,6 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
     );
 
     removeSuggestions();
-
-    textAreaInput.isAutoCompleteVisible = matches.length !== 0;
 
     if (matches.length === 0) {
       return;
@@ -85,6 +83,8 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
           removeSuggestions();
         }
       }
+
+      textAreaInput.isAutoCompleteActive = activeSuggestionIndex >= 0;
 
       if (suggestionsContainer) {
         Array.from(suggestionsContainer.children).forEach((child, i) => {
