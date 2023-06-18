@@ -10,7 +10,7 @@ window.addEventListener("load", async () => {
 
   input.addEventListener("input", cleanupAiSuggestion);
   aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
-  enableAutoComplete(aiPromptTextArea, getAIPromptHistory);
+  enableAutoComplete(aiPromptTextArea, getAIPromptHistory, deleteMRUItem);
 
   const selectedText = await getSelectedTextInActiveTab();
   if (selectedText == "") {
