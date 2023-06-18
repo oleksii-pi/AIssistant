@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Write it better",
+  "name": "AIssistant",
   "version": "1.0",
-  "description": "Selected text and ask ChatGPT API about it.",
+  "description": "Select text and ask AI about it",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
