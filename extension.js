@@ -1,10 +1,12 @@
 // idea: screen scraping
-const userConfig = {
-  defaultAIPrompt: "Improve this text:",
-};
 
 let abortController;
-const promptInput = createPromptInput(userConfig);
+const promptInput = createPromptInput();
+
+const aiPromptHistory = getAIPromptHistory().then((history) => {
+  promptInput.value = history.length > 0 ? history[0] : "Explain it:";
+});
+
 const answerTextarea = createAnswerTextArea();
 
 enableAutoComplete(promptInput, getAIPromptHistory, deleteMRUItem);
@@ -140,14 +142,11 @@ function restoreSelection() {
   }
 }
 
-function createPromptInput(config) {
+function createPromptInput() {
   const input = document.createElement("input");
   input.style.display = "none";
   input.className = "ai-request-input";
   input.type = "text";
-  //const aiPromptHistory = await getAIPromptHistory();
-  //input.value = aiPromptHistory.length > 0 ? aiPromptHistory[0] : config.defaultAIPrompt;
-  input.config = config;
   input.addEventListener("keydown", async function (event) {
     if (event.key === "Enter") {
       event.preventDefault(); // Prevent the default form submission
