@@ -3,6 +3,7 @@
   position: absolute !important;
   border: 1px solid #ccc !important;
 }
+
 .autocomplete-suggestion {
   padding: 10px 4px 10px 4px !important;
   background-color: white !important;
@@ -11,7 +12,11 @@
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
     Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
 .active {
   background-color: #eee !important;
 }
