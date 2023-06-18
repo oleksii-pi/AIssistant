@@ -17,13 +17,13 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
   async function createSuggestionsContainer() {
     const inputValue = textAreaInput.value;
 
-    const matches = (await getDataAsync()).filter((str) =>
+    const filteredOptions = (await getDataAsync()).filter((str) =>
       str.toLowerCase().includes(inputValue.toLowerCase())
     );
 
     removeSuggestions();
 
-    if (matches.length === 0) {
+    if (filteredOptions.length === 0) {
       return;
     }
     suggestionsContainer = document.createElement("div");
@@ -35,11 +35,12 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
 
     textAreaInput.parentNode.appendChild(suggestionsContainer);
 
-    matches.forEach((match) => {
-      const item = document.createElement("div");
-      item.innerText = match;
-      item.suggestionText = match;
-      item.classList.add("autocomplete-suggestion");
+    filteredOptions.forEach((option) => {
+      const optionElement = document.createElement("div");
+      optionElement.innerText = option;
+      optionElement.suggestionText = option;
+      optionElement.classList.add("autocomplete-suggestion");
+      optionElement.classList.add("notranslate");
 
       const deleteButton = document.createElement("button");
       deleteButton.innerHTML = "&times;";
@@ -53,9 +54,9 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
         await createSuggestionsContainer();
       });
 
-      item.appendChild(deleteButton);
+      optionElement.appendChild(deleteButton);
 
-      suggestionsContainer.appendChild(item);
+      suggestionsContainer.appendChild(optionElement);
     });
   }
 
