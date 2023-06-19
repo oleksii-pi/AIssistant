@@ -3,10 +3,12 @@ body {
   margin: 0px;
   width: 400px;
 }
+
 select {
   margin: 8px 0px;
   padding: 8px;
 }
+
 textarea {
   padding: 8px;
   border-color: #eee;
@@ -37,9 +39,19 @@ button:focus {
   flex-direction: row;
   gap: 8px;
 }
+
 .configButton {
-  margin: 8px 0px;
-  padding: 4px 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  padding: 4px 4px;
+  background-color: #5469d4;
+  color: white;
+  text-align: center;
+  border-radius: 0;
+  border: none;
+  cursor: pointer;
 }
 
 .submitButton {
@@ -49,6 +61,10 @@ button:focus {
   margin: 10px;
   padding: 8px 16px;
   cursor: pointer;
+  background-color: #5469d4;
+  color: white;
+  border-radius: 4px;
+  border: none;
 }
 
 .inputContainer {
@@ -69,27 +85,6 @@ button:focus {
 
 #aiSuggestionTextArea {
   background-color: #fffbcd;
-}
-
-#submitButton {
-  background-color: #5469d4;
-  color: white;
-  border-radius: 4px;
-  border: none;
-}
-
-.configButton {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 10px;
-  padding: 4px 4px;
-  background-color: #5469d4;
-  color: white;
-  text-align: center;
-  border-radius: 0;
-  border: none;
-  cursor: pointer;
 }
 
 .configPopup {
