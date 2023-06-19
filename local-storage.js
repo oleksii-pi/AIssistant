@@ -1,4 +1,5 @@
 function setStorage(key, value) {
+  //console.log(`setStorage: ${key}`);
   return new Promise((resolve, reject) => {
     chrome.storage.local.set({ [key]: value }, () => {
       if (chrome.runtime.lastError) {
@@ -11,6 +12,7 @@ function setStorage(key, value) {
 }
 
 function getStorage(key) {
+  //console.log(`getStorage: ${key}`);
   return new Promise((resolve, reject) => {
     chrome.storage.local.get([key], (result) => {
       if (chrome.runtime.lastError) {
