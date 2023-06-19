@@ -31,7 +31,9 @@ async function requestAI() {
   answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
 
   const openaiSecretKey = await getOpenAiSecretKey();
-  const aiQuery = `${promptInput.value} ${selectedText}`;
+  const prompt = promptInput.value;
+  const promptColon = prompt.endsWith(":") ? "" : ":";
+  const aiQuery = `${prompt + promptColon} ${selectedText}`;
   console.log(aiQuery);
   document.body.style.cursor = "wait";
   abortController = new AbortController();

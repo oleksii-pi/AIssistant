@@ -2,6 +2,8 @@
 let popupAbortController = null;
 
 window.addEventListener("load", async () => {
+  initConfigPopup();
+
   const aiPromptTextArea = await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
   const aiSuggestionTextArea = await registerInput("aiSuggestionTextArea");
@@ -113,4 +115,33 @@ async function submitButtonClick(event) {
   popupAbortController = null;
 
   submitButton.textContent = "Submit";
+}
+
+function initConfigPopup() {
+  const configPopup = document.getElementById("configPopup");
+
+  const configButton = document.getElementById("configButton");
+  configButton.addEventListener("click", openConfigPopup);
+  async function openConfigPopup() {
+    document.getElementById("aiModelName").value = await getAiModelName();
+    configPopup.style.display = "flex";
+  }
+
+  const configForm = document.getElementById("configForm");
+  configForm.addEventListener("submit", updateConfig);
+  async function updateConfig(e) {
+    e.preventDefault();
+    const aiModel = document.getElementById("aiModelName").value;
+    await setAiModelName(aiModel);
+    const openAIKey = document.getElementById("openAIKey").value;
+    if (openAIKey !== "") {
+      await setOpenAiSecretKey(openAIKey);
+    }
+    configPopup.style.display = "none";
+  }
+
+  const cancelButton = document.getElementById("cancelButton");
+  cancelButton.addEventListener("click", () => {
+    document.getElementById("configPopup").style.display = "none";
+  });
 }

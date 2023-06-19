@@ -42,3 +42,26 @@ async function deleteMRUItem(itemText) {
 async function getAIPromptHistory() {
   return (await getStorage("promptHistory")) ?? [];
 }
+
+async function getAiModelName() {
+  return (await getStorage("AiModelName")) ?? "gpt-3.5-turbo";
+}
+
+async function setAiModelName(value) {
+  await setStorage("AiModelName", value);
+}
+
+async function getOpenAiSecretKey() {
+  let openaiSecretKey = await getStorage("openaiSecretKey");
+  if (!openaiSecretKey) {
+    openaiSecretKey = prompt(
+      "Please enter your OpenAI secret key. Enable paid plan here https://platform.openai.com/account/billing/overview and generate secret key here https://platform.openai.com/account/api-keys"
+    );
+    await setOpenAiSecretKey(openaiSecretKey);
+  }
+  return openaiSecretKey;
+}
+
+async function setOpenAiSecretKey(value) {
+  await setStorage("openaiSecretKey", value);
+}

@@ -8,16 +8,27 @@
     <script src="../openAi.js"></script>
   </head>
   <body>
-
     <div class="container">
       <div class="horizontal">
         <textarea class="top" id="aiPromptTextArea"></textarea> 
+        <button class="configButton" id="configButton" tabindex="-1">*</button>
       </div>
       <div class="inputContainer half">
         <textarea class="top" id="inputTextArea"></textarea> 
         <button class="submitButton" id="submitButton">Submit</button>  
       </div>
       <textarea class="bottom" id="aiSuggestionTextArea" ></textarea> 
+    </div>
+
+    <div id="configPopup" class="configPopup">
+      <form id="configForm">
+        <label for="aiModelName">AI Model Name:</label><br>
+        <input type="text" id="aiModelName" name="aiModelName"><br>
+        <label for="openAIKey">OpenAI Key:</label><br>
+        <input type="text" id="openAIKey" name="openAIKey" autocomplete="off"><br>
+        <input type="submit" id="submitButton" value="Update">
+        <input type="button" id="cancelButton" value="Cancel">
+      </form> 
     </div>
   </body>
 </html>

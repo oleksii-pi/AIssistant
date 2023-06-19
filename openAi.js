@@ -1,7 +1,3 @@
-const openAiConfig = {
-  aiModel: "gpt-3.5-turbo",
-};
-
 async function streamAnswer(
   abortController,
   openaiSecretKey,
@@ -9,6 +5,7 @@ async function streamAnswer(
   onPartialResponse,
   onError
 ) {
+  const aiModel = (await getAiModelName()) ?? "gpt-3.5-turbo";
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -16,7 +13,7 @@ async function streamAnswer(
       Authorization: "Bearer " + openaiSecretKey,
     },
     body: JSON.stringify({
-      model: openAiConfig.aiModel,
+      model: aiModel,
       messages: [{ role: "user", content: text }],
       max_tokens: 1000,
       temperature: 0.05,
@@ -47,19 +44,4 @@ async function streamAnswer(
   } catch (error) {
     onError(error);
   }
-}
-
-async function getOpenAiSecretKey() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get("openaiSecretKey", function (data) {
-      let openaiSecretKey = data.openaiSecretKey;
-      if (!openaiSecretKey) {
-        openaiSecretKey = prompt(
-          "Please enter your OpenAI secret key. Enable paid plan here https://platform.openai.com/account/billing/overview and generate secret key here https://platform.openai.com/account/api-keys"
-        );
-        chrome.storage.sync.set({ openaiSecretKey }); //! store it only if success or it should be possible to reset
-      }
-      resolve(openaiSecretKey);
-    });
-  });
 }
