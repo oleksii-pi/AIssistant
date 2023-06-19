@@ -37,6 +37,8 @@
   margin-left: 20px;
   line-height: 0;
   font-family: inherit;
+  min-height: unset;
+  min-width: unset;
 }
 
 .autocomplete-suggestion > .delete-button:hover {
