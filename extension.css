@@ -1,0 +1,61 @@
+.ai-request-input {
+  cursor: pointer;
+  position: absolute;
+  width: 256px;
+  height: 32px;
+  padding: 2px 8px;
+  box-sizing: border-box;
+  border: none;
+  border-style: hidden;
+  border-radius: 4px;
+  background-color: #5469d4 !important;
+  color: white;
+  outline: none;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: unset;
+  max-height: unset;
+  transition: unset;
+  box-shadow: unset;
+  z-index: 2147483647;
+}
+
+.selection-text-overlay {
+  position: absolute;
+  outline: 3px dashed rgba(255, 105, 180, 0.3);
+}
+
+.ai-answer-input {
+  cursor: pointer;
+  position: absolute;
+  padding: 7px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-color: #fffbcd;
+  color: #333;
+  z-index: 2147483646;
+  overflow-y: hidden;
+  min-width: 300px;
+  font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
+    Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+
+  appearance: none;
+  outline: none;
+  box-shadow: none;
+}
+
+.ai-request-input::selection,
+.ai-answer-input::selection {
+  background: #3390ff;
+  color: white;
+}
+
+.selected-text-highlight {
+  background-color: #b7c2ff; /* Light blue */
+  color: black;
+  font-size: unset;
+}

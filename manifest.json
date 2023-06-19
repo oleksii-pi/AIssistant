@@ -27,7 +27,7 @@
         "openAi.js",
         "extension.js"
       ],
-      "css": ["styles.css", "autocomplete.css"]
+      "css": ["extension.css", "autocomplete.css"]
     }
   ]
 }
