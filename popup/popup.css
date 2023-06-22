@@ -40,12 +40,12 @@ button:focus {
   gap: 8px;
 }
 
-.configButton {
+.settings-button {
   position: absolute;
   top: 0;
   right: 0;
   margin: 10px;
-  padding: 4px 4px;
+  padding: 2px 2px;
   background-color: #5469d4;
   color: white;
   text-align: center;
@@ -54,7 +54,13 @@ button:focus {
   cursor: pointer;
 }
 
-.submitButton {
+.settings-button .icon {
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.submit-button {
   position: absolute;
   bottom: 0;
   right: 0;
