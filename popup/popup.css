@@ -54,6 +54,26 @@ button:focus {
   cursor: pointer;
 }
 
+.submit-config-button {
+  background-color: #5469d4;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.cancel-config-button {
+  background-color: lightgray;
+  color: black;
+  padding: 8px 16px;
+  text-align: center;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
 .settings-button .icon {
   width: 14px;
   height: 14px;
@@ -73,7 +93,7 @@ button:focus {
   border: none;
 }
 
-.inputContainer {
+.input-container {
   display: flex;
   position: relative;
 }
@@ -93,7 +113,7 @@ button:focus {
   background-color: #fffbcd;
 }
 
-.configPopup {
+.config-popup {
   display: none;
   position: fixed;
   top: 0;

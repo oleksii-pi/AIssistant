@@ -15,21 +15,21 @@
           <object type="image/svg+xml" data="settings.svg" class="icon">Your browser does not support SVG</object>
         </button>
       </div>
-      <div class="inputContainer half">
+      <div class="input-container half">
         <textarea class="top" id="inputTextArea"></textarea> 
         <button class="submit-button" id="submitButton">Submit</button>  
       </div>
       <textarea class="bottom" id="aiSuggestionTextArea" ></textarea> 
     </div>
 
-    <div id="configPopup" class="configPopup">
+    <div class="config-popup" id="configPopup">
       <form id="configForm">
         <label for="aiModelName">AI Model Name:</label><br>
         <input type="text" id="aiModelName" name="aiModelName"><br>
         <label for="openAIKey">OpenAI Key:</label><br>
-        <input type="text" id="openAIKey" name="openAIKey" autocomplete="off"><br>
-        <input type="submit" value="Update">
-        <input type="button" id="cancelButton" value="Cancel">
+        <input type="text" id="openAIKey" name="openAIKey" autocomplete="off" placeholder="********************"><br>
+        <input type="submit" class="submit-config-button" value="Update">
+        <input type="button" class="cancel-config-button" id="cancelButton" value="Cancel">
       </form> 
     </div>
   </body>
