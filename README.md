@@ -1,4 +1,19 @@
 # AIssistant
+- Enhance your AI experience with most recently used prompts integrated into web page:
+<img width="419" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/f9798ef7-9b02-4ada-b6bf-15bea3e47ced">
+<br>
+
+- Ask AI with your context:
+<br>
+<img width="464" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/48f10808-b615-4aca-bfbf-084bf1f2021b">
+<br>
+
+- Select AI model:
+<br>
+<img width="275" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/08ce4ce5-b431-479f-ae28-b8ad23733749">
+
+
+
 
 OpenAI GPT Chrome extension 
 https://www.youtube.com/watch?v=W6gwE8erpKU
@@ -19,5 +34,9 @@ How to use from popup:
 3. Modify AI prompt if needed
 4. Press Submit
 
-<img width="400" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/4022f180-0290-47f0-8673-75b464278c94">
 
+
+
+
+
+* The code in this repository was written quickly. Do not take it serious.
