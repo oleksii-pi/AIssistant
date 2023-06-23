@@ -60,6 +60,15 @@ async function requestAI() {
 
 document.addEventListener("mousedown", (event) => {
   if (
+    promptInput.getAutoCompleteContainer &&
+    promptInput.getAutoCompleteContainer()?.contains(event.target)
+  ) {
+    if (promptInput.hideAutoComplete) promptInput.hideAutoComplete();
+    requestAI();
+    return;
+  }
+
+  if (
     promptInput.contains(event.target) ||
     answerTextarea.contains(event.target)
   ) {
@@ -67,7 +76,7 @@ document.addEventListener("mousedown", (event) => {
   }
 
   promptInput.style.display = "none";
-  promptInput.hideAutoComplete();
+  if (promptInput.hideAutoComplete) promptInput.hideAutoComplete();
   answerTextarea.style.display = "none";
   cleanUpTextHighlights();
   restoreSelection();

@@ -4,6 +4,7 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
 
   textAreaInput.isAutoCompleteActive = false;
   textAreaInput.hideAutoComplete = removeSuggestions;
+  textAreaInput.getAutoCompleteContainer = () => suggestionsContainer;
 
   function removeSuggestions() {
     textAreaInput.isAutoCompleteActive = false;
@@ -41,6 +42,10 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
       optionElement.suggestionText = option;
       optionElement.classList.add("autocomplete-suggestion");
       optionElement.classList.add("notranslate");
+
+      optionElement.addEventListener("mousedown", function () {
+        textAreaInput.value = option;
+      });
 
       const deleteButton = document.createElement("button");
       deleteButton.innerHTML = "&times;";

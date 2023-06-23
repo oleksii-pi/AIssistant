@@ -23,6 +23,10 @@
   background-color: #eee;
 }
 
+.autocomplete-suggestion {
+  cursor: pointer;
+}
+
 .autocomplete-suggestion > .delete-button {
   background-color: transparent;
   color: #ccc;
