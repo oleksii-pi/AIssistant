@@ -118,30 +118,43 @@ async function submitButtonClick(event) {
 }
 
 function initConfigPopup() {
-  const configPopup = document.getElementById("configPopup");
-
   const configButton = document.getElementById("configButton");
-  configButton.addEventListener("click", openConfigPopup);
-  async function openConfigPopup() {
-    document.getElementById("aiModelName").value = await getAiModelName();
+  const configPopup = document.getElementById("configPopup");
+  const configForm = document.getElementById("configForm");
+  const aiModelNameInput = document.getElementById("aiModelName");
+  const openAIKeyInput = document.getElementById("openAIKey");
+  const cancelButton = document.getElementById("cancelButton");
+
+  configButton.addEventListener("click", showConfigPopup);
+  configForm.addEventListener("submit", updateConfig);
+  cancelButton.addEventListener("click", hideConfigPopup);
+  document.addEventListener("click", documentClickHidesConfigPopup);
+
+  function documentClickHidesConfigPopup(event) {
+    var isClickOutsidePopup = !configForm.contains(event.target);
+    if (isClickOutsidePopup) {
+      hideConfigPopup();
+    }
+  }
+
+  async function showConfigPopup() {
+    aiModelNameInput.value = await getAiModelName();
+    openAIKeyInput.value = "";
     configPopup.style.display = "flex";
   }
 
-  const configForm = document.getElementById("configForm");
-  configForm.addEventListener("submit", updateConfig);
   async function updateConfig(e) {
     e.preventDefault();
-    const aiModel = document.getElementById("aiModelName").value;
+    const aiModel = aiModelNameInput.value;
     await setAiModelName(aiModel);
-    const openAIKey = document.getElementById("openAIKey").value;
+    const openAIKey = openAIKeyInput.value;
     if (openAIKey !== "") {
       await setOpenAiSecretKey(openAIKey);
     }
-    configPopup.style.display = "none";
+    hideConfigPopup();
   }
 
-  const cancelButton = document.getElementById("cancelButton");
-  cancelButton.addEventListener("click", () => {
-    document.getElementById("configPopup").style.display = "none";
-  });
+  function hideConfigPopup() {
+    configPopup.style.display = "none";
+  }
 }
