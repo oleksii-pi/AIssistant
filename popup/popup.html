@@ -12,12 +12,12 @@
       <div class="horizontal">
         <textarea class="top" id="aiPromptTextArea"></textarea> 
         <button class="settings-button" id="configButton" tabindex="-1">
-          <object type="image/svg+xml" data="settings.svg" class="icon">Your browser does not support SVG</object>
+          <object type="image/svg+xml" data="settings.svg" class="icon" tabindex="-1">Your browser does not support SVG</object>
         </button>
       </div>
       <div class="input-container half">
         <textarea class="top" id="inputTextArea"></textarea> 
-        <input type="number" id="temperatureInput" min="0" max="10" title="Temperature. Range from 0 to 10">
+        <input type="number" id="temperatureInput" tabindex="-1" min="0" max="10" title="Temperature (creativity). Range from 0 to 10">
         <button class="submit-button" id="submitButton">Submit</button>  
       </div>
       <textarea class="bottom" id="aiSuggestionTextArea" ></textarea> 
