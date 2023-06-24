@@ -93,6 +93,17 @@ button:focus {
   border: none;
 }
 
+#temperatureInput {
+  position: absolute;
+  border-radius: 4px;
+  padding: 6px 8px;
+  border: none;
+  bottom: 0;
+  right: 80px;
+  border: solid #5469d4;
+  margin: 10px;
+}
+
 .input-container {
   display: flex;
   position: relative;

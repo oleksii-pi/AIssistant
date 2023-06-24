@@ -94,13 +94,19 @@ async function submitButtonClick(event) {
   await storeInputValue(aiPromptTextArea);
   await storeAIPromptToMRU(aiPromptTextArea.value);
   await cleanupAiSuggestion();
-  const aiQuery = `${aiPromptTextArea.value} ${inputTextArea.value}`;
+  const contextString = inputTextArea.value;
+  const prompt = aiPromptTextArea.value;
+  const promptColon = prompt === "" || prompt.endsWith(":") ? "" : ":";
+  const aiQuery = `${prompt + promptColon} ${contextString}`;
+  const temperature = document.getElementById("temperatureInput").value / 10;
+
   await log(aiQuery);
   popupAbortController = new AbortController();
   await streamAnswer(
     popupAbortController,
     openaiSecretKey,
     aiQuery,
+    temperature,
     (partialResponse) => {
       aiSuggestionTextArea.value += partialResponse;
     },

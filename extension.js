@@ -32,7 +32,7 @@ async function requestAI() {
 
   const openaiSecretKey = await getOpenAiSecretKey();
   const prompt = promptInput.value;
-  const promptColon = prompt.endsWith(":") ? "" : ":";
+  const promptColon = prompt === "" || prompt.endsWith(":") ? "" : ":";
   const aiQuery = `${prompt + promptColon} ${selectedText}`;
   console.log(aiQuery);
   document.body.style.cursor = "wait";
@@ -44,6 +44,7 @@ async function requestAI() {
     abortController,
     openaiSecretKey,
     aiQuery,
+    0,
     (partialResponse) => {
       answerTextarea.value += partialResponse;
       answerTextarea.style.height = "auto";

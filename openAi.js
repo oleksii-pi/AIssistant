@@ -4,6 +4,7 @@ async function streamAnswer(
   abortController,
   openaiSecretKey,
   text,
+  temperature,
   onPartialResponse,
   onError
 ) {
@@ -19,7 +20,7 @@ async function streamAnswer(
         model: aiModel,
         messages: [{ role: "user", content: text }],
         max_tokens: 2000,
-        temperature: 0.05,
+        temperature: temperature,
         n: 1,
         stream: true,
       }),
