@@ -66,6 +66,8 @@ async function streamAnswer(
       onPartialResponse(partialTex);
     }
   } catch (error) {
-    onError(error);
+    if (error.name !== "AbortError") {
+      onError(error);
+    }
   }
 }
