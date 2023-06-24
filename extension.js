@@ -51,6 +51,8 @@ async function requestAI() {
     },
     (error) => {
       abortController = null;
+      answerTextarea.value +=
+        "Error occurred while streaming the answer: " + error;
     }
   );
   document.body.style.cursor = "default";

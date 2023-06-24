@@ -105,6 +105,8 @@ async function submitButtonClick(event) {
       aiSuggestionTextArea.value += partialResponse;
     },
     async (error) => {
+      aiSuggestionTextArea.value +=
+        "Error occurred while streaming the answer: " + error;
       await log(error);
       popupAbortController = null;
     }
