@@ -1,1 +1,16 @@
-<?xml version="1.0" ?><svg data-name="Layer 1" id="Layer_1" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><defs><style>.cls-1{fill:#ffffff;}</style></defs><title/><path class="cls-1" d="M26,37H22a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Z"/><path class="cls-1" d="M26,9H22a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Z"/><path class="cls-1" d="M38,21a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V22A1,1,0,0,0,38,21Z"/><path class="cls-1" d="M10,27a1,1,0,0,0,1-1V22a1,1,0,0,0-2,0v4A1,1,0,0,0,10,27Z"/><path class="cls-1" d="M29.76,11H37v6.92a1,1,0,0,0,2,0V10a1,1,0,0,0-1-1H29.76a1,1,0,0,0,0,2Z"/><path class="cls-1" d="M18.1,9H10a1,1,0,0,0-1,1v7.92a1,1,0,0,0,2,0V11h7.1a1,1,0,0,0,0-2Z"/><path class="cls-1" d="M18.07,37H11V30a1,1,0,1,0-2,0v8a1,1,0,0,0,1,1h8.07a1,1,0,0,0,0-2Z"/><path class="cls-1" d="M43,37H39V30a1,1,0,0,0-2,0v7H30a1,1,0,1,0,0,2h7v4a1,1,0,0,0,2,0V39h4a1,1,0,0,0,0-2Z"/></svg>
+<?xml version="1.0" ?>
+<svg data-name="Layer 1" id="Layer_1" viewBox="0 0 48 48"
+  xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>.cls-1{fill:#ffffff; stroke:#ffffff; stroke-width:1.5;}</style>
+  </defs>
+  <title/>
+  <path class="cls-1" d="M26,37H22a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Z"/>
+  <path class="cls-1" d="M26,9H22a1,1,0,0,0,0,2h4a1,1,0,0,0,0-2Z"/>
+  <path class="cls-1" d="M38,21a1,1,0,0,0-1,1v4a1,1,0,0,0,2,0V22A1,1,0,0,0,38,21Z"/>
+  <path class="cls-1" d="M10,27a1,1,0,0,0,1-1V22a1,1,0,0,0-2,0v4A1,1,0,0,0,10,27Z"/>
+  <path class="cls-1" d="M29.76,11H37v6.92a1,1,0,0,0,2,0V10a1,1,0,0,0-1-1H29.76a1,1,0,0,0,0,2Z"/>
+  <path class="cls-1" d="M18.1,9H10a1,1,0,0,0-1,1v7.92a1,1,0,0,0,2,0V11h7.1a1,1,0,0,0,0-2Z"/>
+  <path class="cls-1" d="M18.07,37H11V30a1,1,0,1,0-2,0v8a1,1,0,0,0,1,1h8.07a1,1,0,0,0,0-2Z"/>
+  <path class="cls-1" d="M43,37H39V30a1,1,0,0,0-2,0v7H30a1,1,0,1,0,0,2h7v4a1,1,0,0,0,2,0V39h4a1,1,0,0,0,0-2Z"/>
+</svg>
