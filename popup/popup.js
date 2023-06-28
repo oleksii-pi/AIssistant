@@ -14,40 +14,14 @@ window.addEventListener("load", async () => {
   aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
   enableAutoComplete(aiPromptTextArea, getAIPromptHistory, deleteMRUItem);
 
-  const selectedText = await getSelectedTextInActiveTab();
-  if (selectedText == "") {
-    input.focus();
-    input.select();
-  } else {
-    input.value = selectedText;
-    await storeInputValue(input);
-    await cleanupAiSuggestion();
-    submitButton.focus();
-  }
+  input.focus();
+  input.select();
 });
-
-// window.addEventListener("beforeunload", async function (event) {
-//   if (popupAbortController) {
-//     popupAbortController.abort();
-//     popupAbortController = null;
-//   }
-//   //event.returnValue = "";
-//   await log("popup unloaded");
-// });
 
 async function cleanupAiSuggestion() {
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
   aiSuggestionTextArea.value = "";
   await storeInputValue(aiSuggestionTextArea);
-}
-
-async function getSelectedTextInActiveTab() {
-  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-  const tab = tabs[0];
-  const response = await new Promise((resolve) => {
-    chrome.tabs.sendMessage(tab.id, { action: "getSelectedText" }, resolve);
-  });
-  return response?.selectedText ?? "";
 }
 
 async function log(message) {
