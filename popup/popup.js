@@ -73,6 +73,7 @@ async function submitButtonClick(event) {
   const promptColon = prompt === "" || prompt.endsWith(":") ? "" : ":";
   const aiQuery = `${prompt + promptColon} ${contextString}`;
   const temperature = document.getElementById("temperatureInput").value / 10;
+  const maxTokens = await getAiMaxAITokens();
 
   await log(aiQuery);
   popupAbortController = new AbortController();
@@ -81,6 +82,7 @@ async function submitButtonClick(event) {
     openaiSecretKey,
     aiQuery,
     temperature,
+    maxTokens,
     (partialResponse) => {
       aiSuggestionTextArea.value += partialResponse;
     },
@@ -104,6 +106,7 @@ function initConfigPopup() {
   const configPopup = document.getElementById("configPopup");
   const configForm = document.getElementById("configForm");
   const aiModelNameInput = document.getElementById("aiModelName");
+  const aiMaxAITokensInput = document.getElementById("aiMaxAITokens");
   const openAIKeyInput = document.getElementById("openAIKey");
   const cancelButton = document.getElementById("cancelButton");
 
@@ -121,17 +124,17 @@ function initConfigPopup() {
 
   async function showConfigPopup() {
     aiModelNameInput.value = await getAiModelName();
+    aiMaxAITokensInput.value = await getAiMaxAITokens();
     openAIKeyInput.value = "";
     configPopup.style.display = "flex";
   }
 
   async function updateConfig(e) {
     e.preventDefault();
-    const aiModel = aiModelNameInput.value;
-    await setAiModelName(aiModel);
-    const openAIKey = openAIKeyInput.value;
-    if (openAIKey !== "") {
-      await setOpenAiSecretKey(openAIKey);
+    await setAiModelName(aiModelNameInput.value);
+    await setAiMaxAITokens(aiMaxAITokensInput.value);
+    if (openAIKeyInput.value !== "") {
+      await setOpenAiSecretKey(openAIKeyInput.value);
     }
     hideConfigPopup();
   }

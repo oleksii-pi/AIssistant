@@ -1,3 +1,6 @@
+const defaultAIModel = "gpt-3.5-turbo";
+const defaultAiMaxAITokens = 2000;
+
 function setStorage(key, value) {
   //console.log(`setStorage: ${key}`);
   return new Promise((resolve, reject) => {
@@ -46,11 +49,17 @@ async function getAIPromptHistory() {
 }
 
 async function getAiModelName() {
-  return (await getStorage("AiModelName")) ?? "gpt-3.5-turbo";
+  return (await getStorage("AiModelName")) ?? defaultAIModel;
 }
-
 async function setAiModelName(value) {
   await setStorage("AiModelName", value);
+}
+
+async function getAiMaxAITokens() {
+  return (await getStorage("AiMaxAITokens")) ?? defaultAiMaxAITokens;
+}
+async function setAiMaxAITokens(value) {
+  await setStorage("AiMaxAITokens", +value);
 }
 
 async function getOpenAiSecretKey() {

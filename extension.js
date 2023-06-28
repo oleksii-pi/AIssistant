@@ -40,11 +40,14 @@ async function requestAI() {
   abortController.signal.addEventListener("abort", () => {
     document.body.style.cursor = "default";
   });
+  const maxTokens = await getAiMaxAITokens();
+
   await streamAnswer(
     abortController,
     openaiSecretKey,
     aiQuery,
     0,
+    maxTokens,
     (partialResponse) => {
       answerTextarea.value += partialResponse;
       answerTextarea.style.height = "auto";

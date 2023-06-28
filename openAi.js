@@ -5,6 +5,7 @@ async function streamAnswer(
   openaiSecretKey,
   text,
   temperature,
+  maxTokens,
   onPartialResponse,
   onError
 ) {
@@ -19,7 +20,7 @@ async function streamAnswer(
       body: JSON.stringify({
         model: aiModel,
         messages: [{ role: "user", content: text }],
-        max_tokens: 2000,
+        max_tokens: maxTokens,
         temperature: temperature,
         n: 1,
         stream: true,

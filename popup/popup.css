@@ -143,7 +143,8 @@ button:focus {
   border-radius: 4px;
 }
 
-#configForm input[type="text"] {
+#configForm input[type="text"],
+#configForm input[type="number"] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
