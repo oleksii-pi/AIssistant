@@ -1,10 +1,16 @@
-function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
+function enableAutoComplete(
+  textAreaInput,
+  darkMode,
+  getDataAsync,
+  deleteItemAsync
+) {
   let activeSuggestionIndex = -1;
   let suggestionsContainer;
 
   textAreaInput.isAutoCompleteActive = false;
   textAreaInput.hideAutoComplete = removeSuggestions;
   textAreaInput.getAutoCompleteContainer = () => suggestionsContainer;
+  textAreaInput.darkMode = darkMode;
 
   function removeSuggestions() {
     textAreaInput.isAutoCompleteActive = false;
@@ -29,6 +35,10 @@ function enableAutoComplete(textAreaInput, getDataAsync, deleteItemAsync) {
     }
     suggestionsContainer = document.createElement("div");
     suggestionsContainer.classList.add("autocomplete-suggestions");
+    if (textAreaInput.darkMode) {
+      suggestionsContainer.classList.add("dark");
+    }
+
     suggestionsContainer.style.top = `${
       textAreaInput.offsetTop + textAreaInput.offsetHeight
     }px`;

@@ -1,3 +1,47 @@
+body.dark {
+  background-color: #202123;
+}
+
+body.dark textarea,
+body.dark input {
+  background-color: #40414f;
+  color: #d5d5db;
+  border-color: #606070;
+}
+
+body.dark textarea::placeholder,
+body.dark input::placeholder {
+  color: #808080;
+}
+
+body.dark #aiSuggestionTextArea {
+  background-color: #40414f3f;
+}
+
+body.dark textarea::selection,
+body.dark input::selection {
+  background-color: black;
+}
+
+body.dark #configForm {
+  background-color: black;
+  color: #686978;
+}
+
+body.dark textarea:focus {
+  outline: 2px solid rgba(173, 216, 230, 0.508);
+}
+
+body.dark button:focus {
+  outline: 2px solid rgba(64, 255, 0, 0.517);
+}
+
+body.dark #temperatureInput {
+  border: solid rgba(238, 238, 255, 0.15);
+}
+
+/******************************************************************/
+
 body {
   padding: 0px;
   margin: 0px;
@@ -33,6 +77,7 @@ button:focus {
   padding: 10px;
   border-right: 1px solid #ccc;
   gap: 8px;
+  border: none;
 }
 .horizontal {
   display: flex;

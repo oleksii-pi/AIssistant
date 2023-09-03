@@ -2,6 +2,12 @@
 let popupAbortController = null;
 
 window.addEventListener("load", async () => {
+  const darkMode = await getDarkMode();
+  if (darkMode) {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
   initConfigPopup();
 
   const aiPromptTextArea = await registerInput("aiPromptTextArea");
@@ -12,7 +18,12 @@ window.addEventListener("load", async () => {
 
   input.addEventListener("input", cleanupAiSuggestion);
   aiPromptTextArea.addEventListener("input", cleanupAiSuggestion);
-  enableAutoComplete(aiPromptTextArea, getAIPromptHistory, deleteMRUItem);
+  enableAutoComplete(
+    aiPromptTextArea,
+    darkMode,
+    getAIPromptHistory,
+    deleteMRUItem
+  );
 
   input.focus();
   input.select();
@@ -136,6 +147,14 @@ function initConfigPopup() {
     await setAiModelName(aiModelNameInput.value);
     await setAiMaxAITokens(aiMaxAITokensInput.value);
     await setDarkMode(darkModeInput.checked);
+
+    const darkMode = await getDarkMode();
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+
     if (openAIKeyInput.value !== "") {
       await setOpenAiSecretKey(openAIKeyInput.value);
     }

@@ -1,3 +1,13 @@
+.dark .autocomplete-suggestions > .autocomplete-suggestion {
+  background-color: black;
+  color: #808080;
+}
+
+.dark .autocomplete-suggestions > .active {
+  background-color: #40414f;
+}
+/********************************************************************/
+
 .autocomplete-suggestions {
   z-index: 2147483647;
   position: absolute;
