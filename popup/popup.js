@@ -107,6 +107,7 @@ function initConfigPopup() {
   const configForm = document.getElementById("configForm");
   const aiModelNameInput = document.getElementById("aiModelName");
   const aiMaxAITokensInput = document.getElementById("aiMaxAITokens");
+  const darkModeInput = document.getElementById("darkModeInput");
   const openAIKeyInput = document.getElementById("openAIKey");
   const cancelButton = document.getElementById("cancelButton");
 
@@ -125,6 +126,7 @@ function initConfigPopup() {
   async function showConfigPopup() {
     aiModelNameInput.value = await getAiModelName();
     aiMaxAITokensInput.value = await getAiMaxAITokens();
+    darkModeInput.checked = await getDarkMode();
     openAIKeyInput.value = "";
     configPopup.style.display = "flex";
   }
@@ -133,6 +135,7 @@ function initConfigPopup() {
     e.preventDefault();
     await setAiModelName(aiModelNameInput.value);
     await setAiMaxAITokens(aiMaxAITokensInput.value);
+    await setDarkMode(darkModeInput.checked);
     if (openAIKeyInput.value !== "") {
       await setOpenAiSecretKey(openAIKeyInput.value);
     }

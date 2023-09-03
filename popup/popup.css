@@ -87,6 +87,7 @@ button:focus {
   border-radius: 4px;
   border: none;
   cursor: pointer;
+  float: right;
 }
 
 .cancel-config-button {
@@ -170,4 +171,9 @@ button:focus {
   display: inline-block;
   border: 1px solid #ccc;
   box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  vertical-align: middle;
+  cursor: pointer;
 }

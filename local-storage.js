@@ -1,5 +1,6 @@
 const defaultAIModel = "gpt-3.5-turbo";
 const defaultAiMaxAITokens = 2000;
+const defaultDarkMode = false;
 
 function setStorage(key, value) {
   //console.log(`setStorage: ${key}`);
@@ -60,6 +61,13 @@ async function getAiMaxAITokens() {
 }
 async function setAiMaxAITokens(value) {
   await setStorage("AiMaxAITokens", +value);
+}
+
+async function getDarkMode() {
+  return (await getStorage("darkMode")) ?? defaultDarkMode;
+}
+async function setDarkMode(value) {
+  await setStorage("darkMode", value);
 }
 
 async function getOpenAiSecretKey() {
