@@ -9,7 +9,8 @@ const aiPromptHistory = getAIPromptHistory().then((history) => {
 
 const answerTextarea = createAnswerTextArea();
 
-enableAutoComplete(promptInput, getAIPromptHistory, deleteMRUItem);
+const darkMode = false;
+enableAutoComplete(promptInput, darkMode, getAIPromptHistory, deleteMRUItem);
 
 async function requestAI() {
   promptInput.style.display = "none";
