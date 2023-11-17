@@ -54,10 +54,12 @@ async function streamAnswer(
       }
 
       const sseString = decoder.decode(value);
-      if (sseString.includes("data: [DONE]")) break;
+
       const sseArray = sseString
         .split("\n")
-        .filter((line) => line.startsWith("data:"))
+        .filter(
+          (line) => line.startsWith("data:") && !line.includes("data: [DONE]")
+        )
         .map((line) => JSON.parse(line.substring(6).trim()));
 
       const partialTex = sseArray
@@ -65,6 +67,7 @@ async function streamAnswer(
         .filter((x) => x)
         .join("");
       onPartialResponse(partialTex);
+      if (sseString.includes("data: [DONE]")) break;
     }
   } catch (error) {
     if (error.name !== "AbortError") {
