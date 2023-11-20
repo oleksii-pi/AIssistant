@@ -101,7 +101,7 @@ button:focus {
   cursor: pointer;
 }
 
-.ocr-button {
+.capture-screen-button {
   position: absolute;
   top: 0;
   right: 0;
@@ -118,7 +118,7 @@ button:focus {
 }
 
 .settings-button .icon,
-.ocr-button .icon {
+.capture-screen-button .icon {
   width: 18px;
   height: 18px;
   pointer-events: none;
