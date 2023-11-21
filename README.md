@@ -37,9 +37,4 @@ https://www.youtube.com/watch?v=W6gwE8erpKU
 3. Provide input text
 4. Press Submit
 
-
-
-
-
-
-* The code in this repository was written quickly. Do not take it serious.
+### The code in this repository was written quickly. Do not take it serious.
