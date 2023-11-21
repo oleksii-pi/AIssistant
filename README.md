@@ -12,12 +12,11 @@
 <br>
 <img width="275" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/08ce4ce5-b431-479f-ae28-b8ad23733749">
 
-- Dark Theme
+- Dark Theme:
 <br>
 <img width="395" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/b2e25c14-4619-431e-8bb1-1e3cbf706376">
 
-
-- Ask with image pasted from clipboard:
+- Ask your question with an image pasted from the clipboard:
 <br>
 <img width="395" alt="image" src="https://github.com/AlekseyPi/AIssistant/assets/23477004/6c648b44-3a86-41b3-9ed0-7715ef9c56fc">
 
