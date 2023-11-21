@@ -4,6 +4,7 @@ async function streamAnswer(
   abortController,
   openaiSecretKey,
   text,
+  imageContentBase64,
   temperature,
   maxTokens,
   onPartialResponse,
@@ -11,6 +12,30 @@ async function streamAnswer(
 ) {
   try {
     const aiModel = (await getAiModelName()) ?? defaultAIModelName;
+
+    let messages;
+    if (imageContentBase64) {
+      messages = [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: text,
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: imageContentBase64,
+              },
+            },
+          ],
+        },
+      ];
+    } else {
+      messages = [{ role: "user", content: text }];
+    }
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -19,7 +44,7 @@ async function streamAnswer(
       },
       body: JSON.stringify({
         model: aiModel,
-        messages: [{ role: "user", content: text }],
+        messages: messages,
         max_tokens: maxTokens,
         temperature: temperature,
         n: 1,

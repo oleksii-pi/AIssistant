@@ -101,24 +101,7 @@ button:focus {
   cursor: pointer;
 }
 
-.capture-screen-button {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 20px;
-  height: 20px;
-  margin: 0px;
-  padding: 0px;
-  background-color: #5469d4;
-  color: white;
-  text-align: center;
-  border-radius: 0;
-  border: none;
-  cursor: pointer;
-}
-
-.settings-button .icon,
-.capture-screen-button .icon {
+.settings-button .icon {
   width: 18px;
   height: 18px;
   pointer-events: none;
@@ -143,6 +126,16 @@ button:focus {
   border-radius: 4px;
   border: none;
   cursor: pointer;
+}
+
+#imagePreviewIcon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 10px;
+  width: 64px;
+  height: 64px;
+  border: none;
 }
 
 .submit-button {

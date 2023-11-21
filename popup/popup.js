@@ -27,7 +27,30 @@ window.addEventListener("load", async () => {
 
   input.focus();
   input.select();
+
+  initPreviewIcon(input);
 });
+
+function initPreviewIcon(input) {
+  input.addEventListener("paste", async function (event) {
+    const items = (event.clipboardData || event.originalEvent.clipboardData)
+      .items;
+    for (index in items) {
+      const item = items[index];
+      if (item.kind === "file" && item.type.match(/^image\//)) {
+        const blob = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          const base64Image = event.target.result;
+          const imagePreviewIcon = document.getElementById("imagePreviewIcon");
+          imagePreviewIcon.src = base64Image;
+          imagePreviewIcon.style.display = "block";
+        };
+        reader.readAsDataURL(blob);
+      }
+    }
+  });
+}
 
 async function cleanupAiSuggestion() {
   const aiSuggestionTextArea = document.getElementById("aiSuggestionTextArea");
@@ -86,12 +109,17 @@ async function submitButtonClick(event) {
   const temperature = document.getElementById("temperatureInput").value / 10;
   const maxTokens = await getAiMaxAITokens();
 
+  const imagePreviewIcon = document.getElementById("imagePreviewIcon");
+  const imageContentBase64 = imagePreviewIcon.src;
+
   await log(aiQuery);
+  await log(imageContentBase64);
   popupAbortController = new AbortController();
   await streamAnswer(
     popupAbortController,
     openaiSecretKey,
     aiQuery,
+    imageContentBase64,
     temperature,
     maxTokens,
     (partialResponse) => {

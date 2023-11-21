@@ -47,6 +47,7 @@ async function requestAI() {
     abortController,
     openaiSecretKey,
     aiQuery,
+    null,
     0,
     maxTokens,
     (partialResponse) => {
