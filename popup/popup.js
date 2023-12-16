@@ -1,4 +1,3 @@
-//! store templates
 let popupAbortController = null;
 
 window.addEventListener("load", async () => {
@@ -12,7 +11,6 @@ window.addEventListener("load", async () => {
 
   const aiPromptTextArea = await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
-  const aiSuggestionTextArea = await registerInput("aiSuggestionTextArea");
   const submitButton = document.getElementById("submitButton");
   submitButton.addEventListener("click", submitButtonClick);
 
@@ -29,7 +27,20 @@ window.addEventListener("load", async () => {
   input.select();
 
   initPreviewIcon(input);
+  await initAIModelSelect();
 });
+
+async function initAIModelSelect() {
+  const userConfigAiModel = (await getAiModelName()) ?? defaultAIModelName;
+  const aiModelSelect = document.getElementById('aiModelSelect');
+  const models = [userConfigAiModel].concat(aiModelList.filter(x => x !== userConfigAiModel));
+  models.forEach(model => {
+    const option = document.createElement('option');
+    option.value = model;
+    option.text = model;
+    aiModelSelect.appendChild(option);
+  });
+}
 
 function initPreviewIcon(input) {
   input.addEventListener("paste", async function (event) {
@@ -115,6 +126,9 @@ async function submitButtonClick(event) {
   await log(aiQuery);
   await log(imageContentBase64);
   popupAbortController = new AbortController();
+
+  let aiModel = document.getElementById('aiModelSelect').value;
+
   await streamAnswer(
     popupAbortController,
     openaiSecretKey,
@@ -130,7 +144,8 @@ async function submitButtonClick(event) {
         "Error occurred while streaming the answer: " + error;
       await log(error);
       popupAbortController = null;
-    }
+    },
+    aiModel
   );
   await storeInputValue(aiSuggestionTextArea);
   aiSuggestionTextArea.focus();

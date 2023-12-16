@@ -151,6 +151,19 @@ button:focus {
   border: none;
 }
 
+#aiModelSelect {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+  background-color: #5469d45b;
+  color: white;
+  border-radius: 4px;
+  border: none;
+}
+
 #temperatureInput {
   position: absolute;
   border-radius: 4px;

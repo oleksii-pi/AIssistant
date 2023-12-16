@@ -42,6 +42,7 @@ async function requestAI() {
     document.body.style.cursor = "default";
   });
   const maxTokens = await getAiMaxAITokens();
+  const aiModel = (await getAiModelName()) ?? defaultAIModelName;
 
   await streamAnswer(
     abortController,
@@ -59,7 +60,8 @@ async function requestAI() {
       abortController = null;
       answerTextarea.value +=
         "Error occurred while streaming the answer: " + error;
-    }
+    },
+    aiModel
   );
   document.body.style.cursor = "default";
   answerTextarea.focus();
