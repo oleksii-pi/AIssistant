@@ -30,6 +30,7 @@ async function requestAI() {
   answerTextarea.style.display = "block";
   answerTextarea.style.height = "auto";
   answerTextarea.style.height = `${answerTextarea.scrollHeight}px`;
+  answerTextarea.focus();
 
   const openaiSecretKey = await getOpenAiSecretKey();
   const prompt = promptInput.value;
@@ -64,7 +65,6 @@ async function requestAI() {
     aiModel
   );
   document.body.style.cursor = "default";
-  answerTextarea.focus();
   answerTextarea.select();
 }
 
