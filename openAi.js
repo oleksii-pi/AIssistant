@@ -81,6 +81,7 @@ async function streamAnswer(
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
+    let accumulated = '';
     while (true) {
       const { value, done } = await reader.read();
       if (done) {
@@ -88,20 +89,27 @@ async function streamAnswer(
       }
 
       const sseString = decoder.decode(value);
+      accumulated += sseString;
 
-      const sseArray = sseString
-        .split("\n")
-        .filter(
-          (line) => line.startsWith("data:") && !line.includes("data: [DONE]")
-        )
-        .map((line) => JSON.parse(line.substring(6).trim()));
+      let newlineIndex;
+      while ((newlineIndex = accumulated.indexOf('\n')) !== -1) {
+        const line = accumulated.slice(0, newlineIndex);
+        accumulated = accumulated.slice(newlineIndex + 1);
 
-      const partialTex = sseArray
-        .map((x) => x.choices[0].delta.content)
-        .filter((x) => x)
-        .join("");
-      onPartialResponse(partialTex);
-      if (sseString.includes("data: [DONE]")) break;
+        if (line.startsWith("data:") && !line.includes("data: [DONE]")) {
+          try {
+            const parsed = JSON.parse(line.substring(6).trim());
+            const partialText = parsed.choices[0].delta.content;
+            if (partialText) {
+              onPartialResponse(partialText);
+            }
+          } catch (error) {
+            onError("Can not parse json: " + line);
+          }
+        }
+      }
+
+      if (accumulated.includes("data: [DONE]")) break;
     }
   } catch (error) {
     if (error.name !== "AbortError") {
