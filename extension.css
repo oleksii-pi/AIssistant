@@ -33,12 +33,12 @@
   position: absolute;
   padding: 7px;
   border-radius: 10px;
-  border: 2px solid transparent;
+  border: 1px solid lightgray;
   background-color: #fffbcd;
   color: #333;
   z-index: 2147483646;
   overflow-y: hidden;
-  min-width: 300px;
+  min-width: 500px;
   font-family: Söhne, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Ubuntu, Cantarell, Noto Sans, sans-serif, Helvetica Neue, Arial,
     Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
@@ -48,11 +48,18 @@
   box-shadow: none;
 }
 
-.ai-request-input::selection,
-.ai-answer-input::selection {
+.ai-request-input::selection
+{
   background: #3390ff;
   color: white;
 }
+
+.ai-answer-input::selection 
+{
+  background: #eeeaaa;
+  color: black;
+}
+
 
 .selected-text-highlight {
   background-color: #b7c2ff; /* Light blue */

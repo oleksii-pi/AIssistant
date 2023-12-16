@@ -1,9 +1,9 @@
-.dark .autocomplete-suggestions > .autocomplete-suggestion {
-  background-color: black;
+div.autocomplete-suggestions.dark > div.autocomplete-suggestion {
+  background-color: #222;
   color: #808080;
 }
 
-.dark .autocomplete-suggestions > .active {
+div.autocomplete-suggestions.dark > div.autocomplete-suggestion.active {
   background-color: #40414f;
 }
 /********************************************************************/
