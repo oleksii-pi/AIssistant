@@ -27,17 +27,9 @@
 
     <div class="config-popup" id="configPopup">
       <form id="configForm">
-        <label for="aiModelName">AI Model Name:</label><br>
-        <input type="text" id="aiModelName" name="aiModelName" list="aiModelList"><br>
-        <datalist id="aiModelList">
-          <option value="gpt-4-1106-preview">
-          <option value="gpt-4-vision-preview">
-          <option value="gpt-4">
-          <option value="gpt-4-32k">
-          <option value="gpt-3.5-turbo">
-          <option value="gpt-3.5-turbo-16k">
-        </datalist>
-        <label for="aiMaxAITokens">AI max tokens:</label><br>
+        <label for="configDefaultAIModelSelect">Default model name:</label><br>
+        <select id="configDefaultAIModelSelect"> </select><br>
+        <label for="aiMaxAITokens">Max tokens:</label><br>
         <input type="number" id="aiMaxAITokens" name="aiMaxAITokens" min="100"><br>
         <label for="openAIKey">OpenAI Key:</label><br>
         <input type="text" id="openAIKey" name="openAIKey" autocomplete="off" placeholder="********************"><br>

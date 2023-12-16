@@ -27,12 +27,15 @@ window.addEventListener("load", async () => {
   input.select();
 
   initPreviewIcon(input);
-  await initAIModelSelect();
+  const aiModelSelect = document.getElementById('aiModelSelect');
+  await initAIModelSelect(aiModelSelect);
 });
 
-async function initAIModelSelect() {
+async function initAIModelSelect(aiModelSelect) {
+  while (aiModelSelect.firstChild) {
+    aiModelSelect.removeChild(aiModelSelect.firstChild);
+  }
   const userConfigAiModel = (await getAiModelName()) ?? defaultAIModelName;
-  const aiModelSelect = document.getElementById('aiModelSelect');
   const models = [userConfigAiModel].concat(aiModelList.filter(x => x !== userConfigAiModel));
   models.forEach(model => {
     const option = document.createElement('option');
@@ -127,7 +130,7 @@ async function submitButtonClick(event) {
   await log(imageContentBase64);
   popupAbortController = new AbortController();
 
-  let aiModel = document.getElementById('aiModelSelect').value;
+  const aiModel = document.getElementById('aiModelSelect').value;
 
   await streamAnswer(
     popupAbortController,
@@ -159,7 +162,7 @@ function initConfigPopup() {
   const configButton = document.getElementById("configButton");
   const configPopup = document.getElementById("configPopup");
   const configForm = document.getElementById("configForm");
-  const aiModelNameInput = document.getElementById("aiModelName");
+  const configDefaultAIModelSelect = document.getElementById("configDefaultAIModelSelect");
   const aiMaxAITokensInput = document.getElementById("aiMaxAITokens");
   const darkModeInput = document.getElementById("darkModeInput");
   const openAIKeyInput = document.getElementById("openAIKey");
@@ -178,7 +181,9 @@ function initConfigPopup() {
   }
 
   async function showConfigPopup() {
-    aiModelNameInput.value = await getAiModelName();
+    const configDefaultAIModelSelect = document.getElementById('configDefaultAIModelSelect');
+    await initAIModelSelect(configDefaultAIModelSelect);
+
     aiMaxAITokensInput.value = await getAiMaxAITokens();
     darkModeInput.checked = await getDarkMode();
     openAIKeyInput.value = "";
@@ -187,7 +192,7 @@ function initConfigPopup() {
 
   async function updateConfig(e) {
     e.preventDefault();
-    await setAiModelName(aiModelNameInput.value);
+    await setAiModelName(configDefaultAIModelSelect.value);
     await setAiMaxAITokens(aiMaxAITokensInput.value);
     await setDarkMode(darkModeInput.checked);
 

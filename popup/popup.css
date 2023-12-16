@@ -40,6 +40,12 @@ body.dark #temperatureInput {
   border: solid rgba(238, 238, 255, 0.15);
 }
 
+body.dark select {
+  background-color: #40414f;
+  color: #d5d5db;
+  border-color: #606070;
+}
+
 /******************************************************************/
 
 body {
@@ -212,6 +218,10 @@ button:focus {
   background-color: #fff;
   padding: 20px;
   border-radius: 4px;
+}
+
+#configDefaultAIModelSelect {
+  width: 100%;
 }
 
 #configForm input[type="text"],
