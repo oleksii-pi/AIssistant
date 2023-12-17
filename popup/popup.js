@@ -11,6 +11,8 @@ window.addEventListener("load", async () => {
 
   const aiPromptTextArea = await registerInput("aiPromptTextArea");
   const input = await registerInput("inputTextArea");
+  await registerInput("aiSuggestionTextArea");
+  
   const submitButton = document.getElementById("submitButton");
   submitButton.addEventListener("click", submitButtonClick);
 
@@ -144,7 +146,7 @@ async function submitButtonClick(event) {
     },
     async (error) => {
       aiSuggestionTextArea.value +=
-        "Error occurred while streaming the answer: " + error;
+        "/n/nError occurred while streaming the answer: " + error;
       await log(error);
       popupAbortController = null;
     },
