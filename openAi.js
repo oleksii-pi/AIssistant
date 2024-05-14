@@ -1,5 +1,8 @@
 const defaultAIModelName = "gpt-3.5-turbo";
 const aiModelList = [
+  "gpt-4o",
+  "gpt-4o-2024-05-13",
+  "gpt-4-turbo",
   "gpt-4-1106-preview",
   "gpt-4-vision-preview",
   "gpt-4",
