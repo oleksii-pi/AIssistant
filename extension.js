@@ -192,6 +192,7 @@ function createAnswerTextArea() {
   textarea.className = "ai-answer-input";
   textarea.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
+      event.stopPropagation();
       textarea.style.display = "none";
       cleanUpTextHighlights();
       restoreSelection();
